@@ -1,2 +1,2 @@
 # BetterSearch
-Better Search for VEGAS Pro
+FX Console but for VEGAS Pro
