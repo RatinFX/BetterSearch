@@ -13,5 +13,15 @@ namespace BetterSearch
         public bool IsAudioFX { get; set; }
         public bool IsTransition { get; set; }
         public bool IsGenerator { get; set; }
+
+        public ExpandedPlugInNode() { }
+        public ExpandedPlugInNode(PlugInNode plugin, bool isVideoFX, bool isAudioFX, bool isTransition, bool isGenerator)
+        {
+            Plugin = plugin;
+            IsVideoFX = isVideoFX;
+            IsAudioFX = isAudioFX;
+            IsTransition = isTransition;
+            IsGenerator = isGenerator;
+        }
     }
 }
