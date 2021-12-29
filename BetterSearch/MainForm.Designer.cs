@@ -110,7 +110,7 @@
             this.Controls.Add(this.lblSearch);
             this.Controls.Add(this.txtSearch);
             this.Name = "MainForm";
-            this.Size = new System.Drawing.Size(270, 409);
+            this.Size = new System.Drawing.Size(270, 364);
             this.grpPresets.ResumeLayout(false);
             this.grpSearchResults.ResumeLayout(false);
             this.ResumeLayout(false);

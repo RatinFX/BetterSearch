@@ -13,60 +13,78 @@ namespace BetterSearch
 {
     public partial class MainForm : UserControl
     {
-        public static Vegas Vegas { get; set; }
+        public Timecode BASE_LENGTH = Timecode.FromSeconds(10);
         public MainForm(Vegas vegas)
         {
-            Vegas = vegas;
+            Data.Vegas = vegas;
             InitializeComponent();
             listSearchResult.DataSource = _bindedSearchResult;
         }
 
-        private List<TrackEvent> SelectedMedias => Vegas.Project.Tracks.SelectMany(x => x.Events.Where(y => y.Selected)).ToList();
+        /// <summary>
+        /// Filtered VideoFX
+        /// </summary>
+        private List<ExpandedPlugInNode> _videoFX => SearchIn(Data.Vegas.VideoFX, isVideoFX: true);
 
-        private IEnumerable<Track> VideoTracks => Vegas.Project.Tracks.Where(x => x.MediaType == MediaType.Video);
-        private IEnumerable<Track> SelectedVideoTracks => VideoTracks.Where(x => x.Selected);
-        private Track FirstSelectedVideoTrack => SelectedVideoTracks.FirstOrDefault();
+        /// <summary>
+        /// Filtered AudioFX
+        /// </summary>
+        private List<ExpandedPlugInNode> _audioFX => SearchIn(Data.Vegas.AudioFX, isAudioFX: true);
 
-        private IEnumerable<Track> AudioTracks => Vegas.Project.Tracks.Where(x => x.MediaType == MediaType.Audio);
-        private IEnumerable<Track> SelectedAudioTracks => AudioTracks.Where(x => x.Selected);
-        private Track FirstSelectedAudioTrack => SelectedAudioTracks.FirstOrDefault();
+        /// <summary>
+        /// Filtered Transitions
+        /// </summary>
+        //private List<ExpandedPlugInNode> _transitions => SearchIn(Data.Vegas.Transitions, isTransition: true);
 
-        private List<ExpandedPlugInNode> _videoFx => SearchIn(Vegas.VideoFX, isVideoFX: true);
-        private List<ExpandedPlugInNode> _audioFX => SearchIn(Vegas.AudioFX, isAudioFX: true);
-        private List<ExpandedPlugInNode> _transitions => SearchIn(Vegas.Transitions, isTransition: true);
-        private List<ExpandedPlugInNode> _generators => SearchIn(Vegas.Generators, isGenerator: true);
+        /// <summary>
+        /// Filtered Generators
+        /// </summary>
+        private List<ExpandedPlugInNode> _generators => SearchIn(Data.Vegas.Generators, isGenerator: true);
+
+        /// <summary>
+        /// Filter the given PlugInNode list by Search text
+        /// </summary>
+        /// <returns>Filtered PlugInNode list</returns>
         public List<ExpandedPlugInNode> SearchIn(PlugInNode list, bool isVideoFX = false, bool isAudioFX = false, bool isTransition = false, bool isGenerator = false)
         {
             return (
-                from p in list.Where(x => x.Name.ToLower().Contains(txtSearch.Text.ToLower()) && !x.IsContainer).ToList()
-                select new ExpandedPlugInNode
-                {
-                    Plugin = p,
-                    IsVideoFX = isVideoFX,
-                    IsAudioFX = isAudioFX,
-                    IsTransition = isTransition,
-                    IsGenerator = isGenerator
-                }).ToList();
+                from plugin in list.Where(x => x.Name.ToLower().Contains(txtSearch.Text.ToLower()) && !x.IsContainer).ToList()
+                select new ExpandedPlugInNode(plugin, isVideoFX, isAudioFX, isTransition, isGenerator)
+                ).ToList();
         }
-        // check which PlugInNode group is it coming from with index number: _videoFx.count -> + _audioFx.count ... 
-        // -> else if (indexNumber > totalcounts .. )
-        // {
-        //   search in _plugingroup -> AddGenerator() / AddTransition() / ...
-        // }
-        private List<ExpandedPlugInNode> _searchResult => _videoFx.Concat(_audioFX).Concat(_generators).Concat(_transitions).ToList();
-        BindingList<string> _bindedSearchResult => new BindingList<string>(_searchResult.Select(x => x.Plugin.Name).ToList());
-        private List<string> _searchResultNames => _searchResult.Select(x => x.Plugin.Name).ToList();
-        public ExpandedPlugInNode SelectedSearchItem => _searchResult.Find(x => listSearchResult.SelectedItem != null && x.Plugin.Name == listSearchResult.SelectedItem.ToString().Split(' ').Last());
-        public EffectPreset SelectedItemPreset => SelectedSearchItem.Plugin.Presets.FirstOrDefault(x => listItemPresets.SelectedItem != null && x.Name == listItemPresets.SelectedItem.ToString().Trim());
 
-        // maybe transition from "Enter -> search" to "Auto search"
+        /// <summary>
+        /// Concat the result of the lists
+        /// </summary>
+        private List<ExpandedPlugInNode> _searchResult => _videoFX
+                                                  .Concat(_audioFX)
+                                                  .Concat(_generators)
+                                                          //.Concat(_transitions)
+                                                          .ToList();
+
+        /// <summary>
+        /// Search result list that gets binded to the ListBox
+        /// </summary>
+        BindingList<string> _bindedSearchResult => new BindingList<string>(_searchResult.Select(x => x.Plugin.Name).ToList());
+
+        /// <summary>
+        /// Selected PlugInNode on the list
+        /// </summary>
+        public ExpandedPlugInNode SelectedSearchItem => _searchResult.Find(x => listSearchResult.SelectedItem != null &&
+                                                                                x.Plugin.Name == listSearchResult.SelectedItem.ToString());
+
+        /// <summary>
+        /// Selected Preset on the list
+        /// </summary>
+        public EffectPreset SelectedItemPreset => SelectedSearchItem.Plugin.Presets.FirstOrDefault(x => listItemPresets.SelectedItem != null &&
+                                                                                                        x.Name == listItemPresets.SelectedItem.ToString().Trim());
+
         /// <summary>
         /// INITIATE DEEP SEARCH
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
+            // e.KeyCode: up -> select the item above
             if (e.KeyCode == Keys.Up)
             {
                 if (listSearchResult.SelectedIndex == 0) return;
@@ -74,6 +92,7 @@ namespace BetterSearch
                 return;
             }
 
+            // e.KeyCode: down -> select the item below
             else if (e.KeyCode == Keys.Down)
             {
                 if (listSearchResult.SelectedIndex == listSearchResult.Items.Count - 1) return;
@@ -81,116 +100,100 @@ namespace BetterSearch
                 return;
             }
 
+            // e.KeyCode: enter -> GenerateOrApplyFX()
             else if (e.KeyCode == Keys.Enter)
             {
                 if (SelectedSearchItem == null) return;
                 using (UndoBlock undo = new UndoBlock($"Add fx: {SelectedSearchItem.Plugin.Name}"))
                 {
-                    UseSelectedItem();
+                    GenerateOrApplyFX();
                 }
                 return;
             }
 
-            else if (e.KeyCode == Keys.Back)
-            {
-            }
-
+            // disable List update if e.KeyCode is not any of the Keys below
             var betweenAZ = e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z;
             var between09 = e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9;
             var allowedKeys = new List<Keys>() { Keys.Back, Keys.Delete, Keys.Space };
-
             if (!betweenAZ && !between09 && !allowedKeys.Contains(e.KeyCode)) return;
 
-            Search();
+            // update visible ListBox
             listSearchResult.DataSource = _bindedSearchResult;
-        }
 
-        private void ClearSearchResults()
-        {
-            // smth else instead of clearing the while list
-            if (listSearchResult.Items.Count > 0) listSearchResult.Items.Clear();
-        }
-
-        private void Search()
-        {
-            //ClearSearchResults();
-            //AddItemsToSearchResults("Video FX", _videoFx);
-            //AddItemsToSearchResults("Audio FX", _audioFX);
-            //AddItemsToSearchResults("Generators", _generators);
-            //AddItemsToSearchResults("Transitions", _transitions);
+            // reset SelectedItem index
             if (listSearchResult.Items.Count > 0) listSearchResult.SelectedIndex = 0;
         }
 
-        private void AddItemsToSearchResults(string sectionName, IEnumerable<PlugInNode> list)
-        {
-            if (list.Count() < 1) return;
-
-            listSearchResult.Items.Add($"> {sectionName}");
-            foreach (var item in list)
-            {
-                listSearchResult.Items.Add($"   {item.Name}");
-            }
-        }
-
+        /// <summary>
+        /// Double clicking on an item in the ListBox -> GenerateOrApplyFX()
+        /// </summary>
         private void listSearchResult_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (SelectedSearchItem == null) return;
             using (UndoBlock undo = new UndoBlock($"Add fx: {SelectedSearchItem.Plugin.Name}"))
             {
-                UseSelectedItem();
+                GenerateOrApplyFX();
             }
         }
 
+        /// <summary>
+        /// Smashing Enter -> GenerateOrApplyFX()
+        /// </summary>
         private void listSearchResult_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode != Keys.Enter) return;
-            if (SelectedSearchItem == null) return;
             using (UndoBlock undo = new UndoBlock($"Add fx: {SelectedSearchItem.Plugin.Name}"))
             {
-                UseSelectedItem();
+                GenerateOrApplyFX();
             }
         }
 
         /// <summary>
         /// Either Generate the Generator or Apply the FX to the selected media(s)
         /// </summary>
-        private void UseSelectedItem()
+        private void GenerateOrApplyFX()
         {
-            // dumb check
+            // dumbass check
             if (listSearchResult.Items.Count < 1 || SelectedSearchItem == null) return;
 
-            // !IsOFX -> apply default fx
-            // IsAudio -> audio fx route
+            // if:   it's a generator, generate it
+            if (SelectedSearchItem.IsGenerator) GenerateGenerator();
 
-            // if it's a generator, generate it
-            if (SelectedSearchItem.Plugin.IsOFX && SelectedSearchItem.Plugin.OFXPlugIn.EffectType == OFXEffectType.Generator)
-            {
-                GenerateGenerator();
-                return;
-            }
-
-            ApplyToSelectedMedias();
+            // else: apply the video / audio FX
+            else ApplyFXToSelectedMedias();
         }
 
+        /// <summary>
+        /// Generate the selected Generator at current CursorPosition
+        /// </summary>
         private void GenerateGenerator()
         {
+            // yup, no idea
             var media = new Media(SelectedSearchItem.Plugin);
             var stream = media.Streams.GetItemByMediaType(MediaType.Video, 0);
-            var newEvent = new VideoEvent(Vegas.Transport.CursorPosition);
 
-            if (FirstSelectedVideoTrack == null)
+            // create new VideoEvent at CursorPosition with BASE_LENGTH length
+            var newEvent = new VideoEvent(Data.Vegas.Transport.CursorPosition, BASE_LENGTH);
+
+            // if there's no selected VideoTrack
+            if (Data.FirstSelectedVideoTrack == null)
             {
-                if (VideoTracks.Count() == 0)
+                // if there's not a single VideoTrack in the project
+                if (Data.VideoTracks.Count() == 0)
                 {
+                    // we create an empty VideoTrack and select it
                     Track videoTrack = new VideoTrack(0, "");
-                    Vegas.Project.Tracks.Add(videoTrack);
-                    VideoTracks.FirstOrDefault().Selected = true;
+                    Data.Vegas.Project.Tracks.Add(videoTrack);
+                    Data.VideoTracks.FirstOrDefault().Selected = true;
                 }
-                foreach (var track in SelectedAudioTracks) track.Selected = false;
+
+                // deselect all the AudioTracks
+                foreach (var track in Data.SelectedAudioTracks) track.Selected = false;
             }
 
-            FirstSelectedVideoTrack.Events.Add(newEvent);
+            // add the Generator to the VideoTrack.Events list
+            Data.FirstSelectedVideoTrack.Events.Add(newEvent);
 
+            // honestly no idea what's a Take but i guess we can Take those
             var take = new Take(stream);
             newEvent.Takes.Add(take);
         }
@@ -198,14 +201,14 @@ namespace BetterSearch
         /// <summary>
         /// Apply the FX to the selected media(s)
         /// </summary>
-        private void ApplyToSelectedMedias()
+        private void ApplyFXToSelectedMedias()
         {
-            foreach (var trackEvent in SelectedMedias)
+            foreach (var trackEvent in Data.SelectedMedias)
             {
-                if (trackEvent.IsAudio()) continue;
+                //if (trackEvent.IsAudio()) continue;
                 var videoEvent = (VideoEvent)trackEvent;
 
-                if (SelectedSearchItem.Plugin.IsOFX && SelectedSearchItem.Plugin.OFXPlugIn.EffectType == OFXEffectType.Transition)
+                if (SelectedSearchItem.IsTransition)
                 {
                     // do transition stuff ??
                     // first media ->> second media
