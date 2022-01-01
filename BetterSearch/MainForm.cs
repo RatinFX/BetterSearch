@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ScriptPortal.Vegas;
+using System.Threading;
+using System.Threading.Tasks;
 //using Sony.Vegas;
 
 namespace BetterSearch
@@ -84,6 +86,18 @@ namespace BetterSearch
         /// </summary>
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
+            // disable List update if e.KeyCode is not any of the Keys below
+            /*
+            var betweenAZ = e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z;
+            var between09 = e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9;
+            var allowedKeys = new List<Keys>() { Keys.Back, Keys.Delete, Keys.Space };
+            if (!betweenAZ && !between09 && !allowedKeys.Contains(e.KeyCode)) return;
+            */
+
+            // completely ignore the following list of keys
+            var ignoredKeys = new List<Keys>() { Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock };
+            if (ignoredKeys.Contains(e.KeyCode)) return;
+
             // e.KeyCode: up -> select the item above
             if (e.KeyCode == Keys.Up)
             {
@@ -108,14 +122,9 @@ namespace BetterSearch
                 {
                     GenerateOrApplyFX();
                 }
+                //if (cbxCloseOnUse.Checked) Task.Factory.StartNew(() => CloseSearch());
                 return;
             }
-
-            // disable List update if e.KeyCode is not any of the Keys below
-            var betweenAZ = e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z;
-            var between09 = e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9;
-            var allowedKeys = new List<Keys>() { Keys.Back, Keys.Delete, Keys.Space };
-            if (!betweenAZ && !between09 && !allowedKeys.Contains(e.KeyCode)) return;
 
             // update visible ListBox
             listSearchResult.DataSource = _bindedSearchResult;
@@ -133,6 +142,7 @@ namespace BetterSearch
             {
                 GenerateOrApplyFX();
             }
+            //if (cbxCloseOnUse.Checked) Task.Factory.StartNew(() => CloseSearch());
         }
 
         /// <summary>
@@ -145,6 +155,7 @@ namespace BetterSearch
             {
                 GenerateOrApplyFX();
             }
+            //if (cbxCloseOnUse.Checked) Task.Factory.StartNew(() => CloseSearch());
         }
 
         /// <summary>
@@ -163,11 +174,23 @@ namespace BetterSearch
         }
 
         /// <summary>
+        /// NOT WORKING / TODO: somehow invoke OnClose in DockControl
+        /// -> ESC / cbxCloseOnUse.Checked
+        /// </summary>
+        //public event EventHandler Close;
+        //private Action CloseSearch()
+        //{
+        //    if (Close != null) Invoke(Close);
+        //    //Parent.Dispose();
+        //    return null;
+        //}
+
+        /// <summary>
         /// Generate the selected Generator at current CursorPosition
         /// </summary>
         private void GenerateGenerator()
         {
-            // yup, no idea
+            // what's this
             var media = new Media(SelectedSearchItem.Plugin);
             var stream = media.Streams.GetItemByMediaType(MediaType.Video, 0);
 

@@ -34,6 +34,7 @@
             this.listItemPresets = new System.Windows.Forms.ListBox();
             this.grpPresets = new System.Windows.Forms.GroupBox();
             this.grpSearchResults = new System.Windows.Forms.GroupBox();
+            this.cbxCloseOnUse = new System.Windows.Forms.CheckBox();
             this.grpPresets.SuspendLayout();
             this.grpSearchResults.SuspendLayout();
             this.SuspendLayout();
@@ -43,7 +44,7 @@
             this.txtSearch.Location = new System.Drawing.Point(64, 10);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(7, 10, 3, 3);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(196, 20);
+            this.txtSearch.Size = new System.Drawing.Size(110, 20);
             this.txtSearch.TabIndex = 14;
             this.txtSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyUp);
             // 
@@ -72,7 +73,7 @@
             // 
             this.listItemPresets.FormattingEnabled = true;
             this.listItemPresets.Location = new System.Drawing.Point(0, 23);
-            this.listItemPresets.Margin = new System.Windows.Forms.Padding(10, 7, 10, 10);
+            this.listItemPresets.Margin = new System.Windows.Forms.Padding(10, 7, 10, 0);
             this.listItemPresets.Name = "listItemPresets";
             this.listItemPresets.Size = new System.Drawing.Size(270, 134);
             this.listItemPresets.TabIndex = 13;
@@ -83,7 +84,7 @@
             // 
             this.grpPresets.Controls.Add(this.listItemPresets);
             this.grpPresets.Location = new System.Drawing.Point(0, 207);
-            this.grpPresets.Margin = new System.Windows.Forms.Padding(0, 7, 0, 10);
+            this.grpPresets.Margin = new System.Windows.Forms.Padding(0, 7, 0, 0);
             this.grpPresets.Name = "grpPresets";
             this.grpPresets.Size = new System.Drawing.Size(270, 159);
             this.grpPresets.TabIndex = 16;
@@ -101,16 +102,31 @@
             this.grpSearchResults.TabStop = false;
             this.grpSearchResults.Text = "Search results";
             // 
+            // cbxCloseOnUse
+            // 
+            this.cbxCloseOnUse.AutoSize = true;
+            this.cbxCloseOnUse.Checked = true;
+            this.cbxCloseOnUse.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbxCloseOnUse.Location = new System.Drawing.Point(180, 12);
+            this.cbxCloseOnUse.Name = "cbxCloseOnUse";
+            this.cbxCloseOnUse.Size = new System.Drawing.Size(87, 17);
+            this.cbxCloseOnUse.TabIndex = 18;
+            this.cbxCloseOnUse.Text = "Close on use";
+            this.cbxCloseOnUse.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
+            this.AutoSize = true;
+            this.Controls.Add(this.cbxCloseOnUse);
             this.Controls.Add(this.grpSearchResults);
             this.Controls.Add(this.grpPresets);
             this.Controls.Add(this.lblSearch);
             this.Controls.Add(this.txtSearch);
             this.Name = "MainForm";
-            this.Size = new System.Drawing.Size(270, 364);
+            this.Size = new System.Drawing.Size(270, 366);
             this.grpPresets.ResumeLayout(false);
             this.grpSearchResults.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -126,5 +142,6 @@
         private System.Windows.Forms.ListBox listItemPresets;
         private System.Windows.Forms.GroupBox grpPresets;
         private System.Windows.Forms.GroupBox grpSearchResults;
+        private System.Windows.Forms.CheckBox cbxCloseOnUse;
     }
 }
