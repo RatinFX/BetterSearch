@@ -13,4 +13,5 @@ how2 shortcut:
 `Shortcut keys:` Shift + Space ( or whatever you'd like to use ) -> `[Add]` -> `[OK]`
 
 todo:
+- color code in the first list: videoFX, audioFX and generators
 - close on apply? (-> double click / enter)
