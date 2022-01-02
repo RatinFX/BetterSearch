@@ -1,7 +1,7 @@
 # BetterSearch
 FX Console but for VEGAS Pro
 
-where??????????????? -> in either one of these folders:
+where do i put this? -> in either one of these folders:
 - `C:\Users\...\Documents\Vegas Application Extensions\`
 - `C:\Users\...\AppData\Local\Vegas Pro\Application Extensions\`
 - `C:\Users\...\AppData\Roaming\Vegas Pro\Application Extensions\`
@@ -14,5 +14,3 @@ how2 shortcut:
 
 todo:
 - close on apply? (-> double click / enter)
-- remove a-z / 0-9 filter limitation
-- show presets + apply selected
