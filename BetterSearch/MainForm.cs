@@ -65,7 +65,7 @@ namespace BetterSearch
                                                           .ToList();
 
         /// <summary>
-        /// Search result list that gets binded to the ListBox
+        /// Search results that get binded to the ListBox
         /// </summary>
         BindingList<string> _bindedSearchResult => new BindingList<string>(_searchResult.Select(x => x.Plugin.Name).ToList());
 
@@ -74,6 +74,11 @@ namespace BetterSearch
         /// </summary>
         public ExpandedPlugInNode SelectedSearchItem => _searchResult.Find(x => listSearchResult.SelectedItem != null &&
                                                                                 x.Plugin.Name == listSearchResult.SelectedItem.ToString());
+
+        /// <summary>
+        /// Item Presets that get binded to the ListBox
+        /// </summary>
+        BindingList<string> _bindedItemPresets => new BindingList<string>(SelectedSearchItem.Plugin.Presets.Select(x => x.Name).ToList());
 
         /// <summary>
         /// Selected Preset on the list
@@ -103,6 +108,7 @@ namespace BetterSearch
             {
                 if (listSearchResult.SelectedIndex == 0) return;
                 listSearchResult.SelectedItem = listSearchResult.Items[listSearchResult.SelectedIndex - 1];
+                ResetPreset();
                 return;
             }
 
@@ -111,6 +117,7 @@ namespace BetterSearch
             {
                 if (listSearchResult.SelectedIndex == listSearchResult.Items.Count - 1) return;
                 listSearchResult.SelectedItem = listSearchResult.Items[listSearchResult.SelectedIndex + 1];
+                ResetPreset();
                 return;
             }
 
@@ -129,8 +136,15 @@ namespace BetterSearch
             // update visible ListBox
             listSearchResult.DataSource = _bindedSearchResult;
 
+            ResetPreset();
+
             // reset SelectedItem index
             if (listSearchResult.Items.Count > 0) listSearchResult.SelectedIndex = 0;
+        }
+
+        private void ResetPreset()
+        {
+            listItemPresets.DataSource = _bindedItemPresets;
         }
 
         /// <summary>
@@ -213,6 +227,9 @@ namespace BetterSearch
                 foreach (var track in Data.SelectedAudioTracks) track.Selected = false;
             }
 
+            var presetName = SelectedItemPreset != null ? SelectedItemPreset.Name : stream.Parent.Generator.Presets.FirstOrDefault().Name;
+            stream.Parent.Generator.Preset = presetName;
+
             // add the Generator to the VideoTrack.Events list
             Data.FirstSelectedVideoTrack.Events.Add(newEvent);
 
@@ -241,8 +258,14 @@ namespace BetterSearch
                 Effect effect = new Effect(SelectedSearchItem.Plugin);
                 videoEvent.Effects.Add(effect);
 
-                effect.Preset = effect.Presets.FirstOrDefault(x => (SelectedItemPreset != null && x.Index == SelectedItemPreset.Index) || x.Index == 0).Name;
+                var presetName = SelectedItemPreset != null ? SelectedItemPreset.Name : effect.Presets.FirstOrDefault().Name;
+                effect.Preset = presetName;
             }
+        }
+
+        private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ResetPreset();
         }
     }
 }

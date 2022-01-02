@@ -42,9 +42,9 @@
             // txtSearch
             // 
             this.txtSearch.Location = new System.Drawing.Point(64, 10);
-            this.txtSearch.Margin = new System.Windows.Forms.Padding(7, 10, 3, 3);
+            this.txtSearch.Margin = new System.Windows.Forms.Padding(7, 10, 3, 10);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(110, 20);
+            this.txtSearch.Size = new System.Drawing.Size(193, 20);
             this.txtSearch.TabIndex = 14;
             this.txtSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyUp);
             // 
@@ -56,6 +56,7 @@
             this.listSearchResult.Name = "listSearchResult";
             this.listSearchResult.Size = new System.Drawing.Size(270, 134);
             this.listSearchResult.TabIndex = 13;
+            this.listSearchResult.SelectedIndexChanged += new System.EventHandler(this.listSearchResult_SelectedIndexChanged);
             this.listSearchResult.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listSearchResult_KeyUp);
             this.listSearchResult.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listSearchResult_MouseDoubleClick);
             // 
@@ -105,14 +106,14 @@
             // cbxCloseOnUse
             // 
             this.cbxCloseOnUse.AutoSize = true;
-            this.cbxCloseOnUse.Checked = true;
-            this.cbxCloseOnUse.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbxCloseOnUse.Enabled = false;
             this.cbxCloseOnUse.Location = new System.Drawing.Point(180, 12);
             this.cbxCloseOnUse.Name = "cbxCloseOnUse";
             this.cbxCloseOnUse.Size = new System.Drawing.Size(87, 17);
             this.cbxCloseOnUse.TabIndex = 18;
             this.cbxCloseOnUse.Text = "Close on use";
             this.cbxCloseOnUse.UseVisualStyleBackColor = true;
+            this.cbxCloseOnUse.Visible = false;
             // 
             // MainForm
             // 
