@@ -34,13 +34,14 @@
             this.listItemPresets = new System.Windows.Forms.ListBox();
             this.grpPresets = new System.Windows.Forms.GroupBox();
             this.grpSearchResults = new System.Windows.Forms.GroupBox();
-            this.cbxCloseOnUse = new System.Windows.Forms.CheckBox();
             this.grpPresets.SuspendLayout();
             this.grpSearchResults.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtSearch
             // 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.Location = new System.Drawing.Point(64, 10);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(7, 10, 3, 10);
             this.txtSearch.Name = "txtSearch";
@@ -50,6 +51,9 @@
             // 
             // listSearchResult
             // 
+            this.listSearchResult.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listSearchResult.FormattingEnabled = true;
             this.listSearchResult.Location = new System.Drawing.Point(0, 23);
             this.listSearchResult.Margin = new System.Windows.Forms.Padding(10, 7, 10, 3);
@@ -72,6 +76,9 @@
             // 
             // listItemPresets
             // 
+            this.listItemPresets.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listItemPresets.FormattingEnabled = true;
             this.listItemPresets.Location = new System.Drawing.Point(0, 23);
             this.listItemPresets.Margin = new System.Windows.Forms.Padding(10, 7, 10, 0);
@@ -83,6 +90,8 @@
             // 
             // grpPresets
             // 
+            this.grpPresets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpPresets.Controls.Add(this.listItemPresets);
             this.grpPresets.Location = new System.Drawing.Point(0, 207);
             this.grpPresets.Margin = new System.Windows.Forms.Padding(0, 7, 0, 0);
@@ -94,6 +103,8 @@
             // 
             // grpSearchResults
             // 
+            this.grpSearchResults.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpSearchResults.Controls.Add(this.listSearchResult);
             this.grpSearchResults.Location = new System.Drawing.Point(0, 40);
             this.grpSearchResults.Margin = new System.Windows.Forms.Padding(0, 7, 0, 3);
@@ -103,25 +114,12 @@
             this.grpSearchResults.TabStop = false;
             this.grpSearchResults.Text = "Search results";
             // 
-            // cbxCloseOnUse
-            // 
-            this.cbxCloseOnUse.AutoSize = true;
-            this.cbxCloseOnUse.Enabled = false;
-            this.cbxCloseOnUse.Location = new System.Drawing.Point(180, 12);
-            this.cbxCloseOnUse.Name = "cbxCloseOnUse";
-            this.cbxCloseOnUse.Size = new System.Drawing.Size(87, 17);
-            this.cbxCloseOnUse.TabIndex = 18;
-            this.cbxCloseOnUse.Text = "Close on use";
-            this.cbxCloseOnUse.UseVisualStyleBackColor = true;
-            this.cbxCloseOnUse.Visible = false;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSize = true;
-            this.Controls.Add(this.cbxCloseOnUse);
             this.Controls.Add(this.grpSearchResults);
             this.Controls.Add(this.grpPresets);
             this.Controls.Add(this.lblSearch);
@@ -138,11 +136,10 @@
 		#endregion
 
 		private System.Windows.Forms.TextBox txtSearch;
-		private System.Windows.Forms.ListBox listSearchResult;
+        private System.Windows.Forms.ListBox listSearchResult;
         private System.Windows.Forms.Label lblSearch;
         private System.Windows.Forms.ListBox listItemPresets;
         private System.Windows.Forms.GroupBox grpPresets;
         private System.Windows.Forms.GroupBox grpSearchResults;
-        private System.Windows.Forms.CheckBox cbxCloseOnUse;
     }
 }

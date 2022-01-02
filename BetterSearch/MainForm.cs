@@ -86,6 +86,11 @@ namespace BetterSearch
         public EffectPreset SelectedItemPreset => SelectedSearchItem.Plugin.Presets.FirstOrDefault(x => listItemPresets.SelectedItem != null &&
                                                                                                         x.Name == listItemPresets.SelectedItem.ToString().Trim());
 
+        private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ResetPreset();
+        }
+
         /// <summary>
         /// INITIATE DEEP SEARCH
         /// </summary>
@@ -129,7 +134,6 @@ namespace BetterSearch
                 {
                     GenerateOrApplyFX();
                 }
-                //if (cbxCloseOnUse.Checked) Task.Factory.StartNew(() => CloseSearch());
                 return;
             }
 
@@ -142,6 +146,9 @@ namespace BetterSearch
             if (listSearchResult.Items.Count > 0) listSearchResult.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// Reset (rebind) the visible preset list
+        /// </summary>
         private void ResetPreset()
         {
             listItemPresets.DataSource = _bindedItemPresets;
@@ -156,7 +163,6 @@ namespace BetterSearch
             {
                 GenerateOrApplyFX();
             }
-            //if (cbxCloseOnUse.Checked) Task.Factory.StartNew(() => CloseSearch());
         }
 
         /// <summary>
@@ -169,7 +175,6 @@ namespace BetterSearch
             {
                 GenerateOrApplyFX();
             }
-            //if (cbxCloseOnUse.Checked) Task.Factory.StartNew(() => CloseSearch());
         }
 
         /// <summary>
@@ -186,18 +191,6 @@ namespace BetterSearch
             // else: apply the video / audio FX
             else ApplyFXToSelectedMedias();
         }
-
-        /// <summary>
-        /// NOT WORKING / TODO: somehow invoke OnClose in DockControl
-        /// -> ESC / cbxCloseOnUse.Checked
-        /// </summary>
-        //public event EventHandler Close;
-        //private Action CloseSearch()
-        //{
-        //    if (Close != null) Invoke(Close);
-        //    //Parent.Dispose();
-        //    return null;
-        //}
 
         /// <summary>
         /// Generate the selected Generator at current CursorPosition
@@ -227,7 +220,7 @@ namespace BetterSearch
                 foreach (var track in Data.SelectedAudioTracks) track.Selected = false;
             }
 
-            var presetName = SelectedItemPreset != null ? SelectedItemPreset.Name : stream.Parent.Generator.Presets.FirstOrDefault().Name;
+            var presetName = SelectedItemPreset?.Name ?? stream.Parent.Generator.Presets.FirstOrDefault().Name;
             stream.Parent.Generator.Preset = presetName;
 
             // add the Generator to the VideoTrack.Events list
@@ -258,14 +251,9 @@ namespace BetterSearch
                 Effect effect = new Effect(SelectedSearchItem.Plugin);
                 videoEvent.Effects.Add(effect);
 
-                var presetName = SelectedItemPreset != null ? SelectedItemPreset.Name : effect.Presets.FirstOrDefault().Name;
+                var presetName = SelectedItemPreset?.Name ?? effect.Presets.FirstOrDefault().Name;
                 effect.Preset = presetName;
             }
-        }
-
-        private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ResetPreset();
         }
     }
 }

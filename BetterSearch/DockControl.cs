@@ -27,11 +27,10 @@ namespace BetterSearch
         public override Size DefaultFloatingSize
         {
             // TODO: change later
-            get { return new Size(270, 250); }
+            get { return new Size(270, 366); }
         }
 
         // load Handler
-
         protected override void OnLoad(EventArgs e)
         {
             mainForm = new MainForm(myVegas)
@@ -39,23 +38,12 @@ namespace BetterSearch
                 Dock = DockStyle.Fill,
             };
 
-            // add manual OnClosed invoke from MainForm
-            //mainForm.Close += OnClosed;
-
             Controls.Add(mainForm);
         }
-
-        //public void OnClosed(object sender, EventArgs args)
-        //{
-        //    OnClosed(args);
-        //}
 
         // close Handler
         protected override void OnClosed(EventArgs args)
         {
-            // remove manual invoke
-            //mainForm.Close -= OnClosed;
-
             base.OnClosed(args);
         }
     }
