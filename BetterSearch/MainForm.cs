@@ -96,15 +96,7 @@ namespace BetterSearch
         /// </summary>
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
-            // disable List update if e.KeyCode is not any of the Keys below
-            /*
-            var betweenAZ = e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z;
-            var between09 = e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9;
-            var allowedKeys = new List<Keys>() { Keys.Back, Keys.Delete, Keys.Space };
-            if (!betweenAZ && !between09 && !allowedKeys.Contains(e.KeyCode)) return;
-            */
-
-            // completely ignore the following list of keys
+            // ignore the following list of keys
             var ignoredKeys = new List<Keys>() { Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock };
             if (ignoredKeys.Contains(e.KeyCode)) return;
 
