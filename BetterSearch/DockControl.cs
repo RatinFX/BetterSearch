@@ -1,5 +1,5 @@
-﻿//using Sony.Vegas;
-using ScriptPortal.Vegas;
+﻿using ScriptPortal.Vegas;
+//using Sony.Vegas;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +21,13 @@ namespace BetterSearch
 
         public override DockWindowStyle DefaultDockWindowStyle
         {
-            get { return DockWindowStyle.Detached; }
+            get { return DockWindowStyle.Floating; }
         }
 
         public override Size DefaultFloatingSize
         {
             // TODO: change later
-            get { return new Size(270, 366); }
+            get { return new Size(270, 367); }
         }
 
         // load Handler
