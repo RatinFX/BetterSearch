@@ -1,18 +1,15 @@
 ﻿using ScriptPortal.Vegas;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+//using Sony.Vegas;
 
 namespace BetterSearch
 {
     public class ExpandedPlugInNode
     {
         public PlugInNode Plugin { get; set; }
-        public bool IsVideoFX { get; set; }
-        public bool IsAudioFX { get; set; }
-        public bool IsTransition { get; set; }
-        public bool IsGenerator { get; set; }
+        public bool IsVideoFX { get; set; } = false;
+        public bool IsAudioFX { get; set; } = false;
+        public bool IsTransition { get; set; } = false;
+        public bool IsGenerator { get; set; } = false;
 
         public ExpandedPlugInNode() { }
         public ExpandedPlugInNode(PlugInNode plugin, bool isVideoFX, bool isAudioFX, bool isTransition, bool isGenerator)

@@ -1,15 +1,12 @@
-﻿using System;
+﻿using ScriptPortal.Vegas;
+//using Sony.Vegas;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using ScriptPortal.Vegas;
-using System.Threading;
-using System.Threading.Tasks;
-//using Sony.Vegas;
 
 namespace BetterSearch
 {
@@ -86,13 +83,16 @@ namespace BetterSearch
         public EffectPreset SelectedItemPreset => SelectedSearchItem.Plugin.Presets.FirstOrDefault(x => listItemPresets.SelectedItem != null &&
                                                                                                         x.Name == listItemPresets.SelectedItem.ToString().Trim());
 
+        /// <summary>
+        /// Selected item index changed
+        /// </summary>
         private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
         {
             ResetPreset();
         }
 
         /// <summary>
-        /// INITIATE DEEP SEARCH
+        /// Search on tip taps
         /// </summary>
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
