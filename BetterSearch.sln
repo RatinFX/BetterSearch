@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterSearch", "BetterSearch\BetterSearch.csproj", "{F15E50E4-6BD9-4053-8100-956CFE9ECBDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VegasProData", "..\VegasProData\VegasProData\VegasProData.csproj", "{24124171-3918-4BF5-A07C-3E00807B7134}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{F15E50E4-6BD9-4053-8100-956CFE9ECBDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F15E50E4-6BD9-4053-8100-956CFE9ECBDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F15E50E4-6BD9-4053-8100-956CFE9ECBDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24124171-3918-4BF5-A07C-3E00807B7134}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24124171-3918-4BF5-A07C-3E00807B7134}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24124171-3918-4BF5-A07C-3E00807B7134}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24124171-3918-4BF5-A07C-3E00807B7134}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F3E3E1A2-AE38-4665-BF8D-82522D48821E}
 	EndGlobalSection
 EndGlobal

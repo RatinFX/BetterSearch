@@ -43,11 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data.cs" />
     <Compile Include="DockControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ExpandedPlugInNode.cs" />
     <Compile Include="MainForm.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -60,6 +58,12 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\VegasProData\VegasProData\VegasProData.csproj">
+      <Project>{24124171-3918-4BF5-A07C-3E00807B7134}</Project>
+      <Name>VegasProData</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

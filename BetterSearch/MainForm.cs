@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VegasProData;
 
 namespace BetterSearch
 {
@@ -23,12 +24,12 @@ namespace BetterSearch
         /// <summary>
         /// Filtered VideoFX
         /// </summary>
-        private List<ExpandedPlugInNode> _videoFX => SearchIn(Data.Vegas.VideoFX, isVideoFX: true);
+        private List<ExtendedPlugInNode> _videoFX => SearchIn(Data.Vegas.VideoFX, isVideoFX: true);
 
         /// <summary>
         /// Filtered AudioFX
         /// </summary>
-        private List<ExpandedPlugInNode> _audioFX => SearchIn(Data.Vegas.AudioFX, isAudioFX: true);
+        private List<ExtendedPlugInNode> _audioFX => SearchIn(Data.Vegas.AudioFX, isAudioFX: true);
 
         /// <summary>
         /// Filtered Transitions
@@ -38,28 +39,28 @@ namespace BetterSearch
         /// <summary>
         /// Filtered Generators
         /// </summary>
-        private List<ExpandedPlugInNode> _generators => SearchIn(Data.Vegas.Generators, isGenerator: true);
+        private List<ExtendedPlugInNode> _generators => SearchIn(Data.Vegas.Generators, isGenerator: true);
 
         /// <summary>
         /// Filter the given PlugInNode list by Search text
         /// </summary>
         /// <returns>Filtered PlugInNode list</returns>
-        public List<ExpandedPlugInNode> SearchIn(PlugInNode list, bool isVideoFX = false, bool isAudioFX = false, bool isTransition = false, bool isGenerator = false)
+        public List<ExtendedPlugInNode> SearchIn(PlugInNode list, bool isVideoFX = false, bool isAudioFX = false, bool isTransition = false, bool isGenerator = false)
         {
             return (
                 from plugin in list.Where(x => x.Name.ToLower().Contains(txtSearch.Text.ToLower()) && !x.IsContainer).ToList()
-                select new ExpandedPlugInNode(plugin, isVideoFX, isAudioFX, isTransition, isGenerator)
+                select new ExtendedPlugInNode(plugin, isVideoFX, isAudioFX, isTransition, isGenerator)
                 ).ToList();
         }
 
         /// <summary>
         /// Concat the result of the lists
         /// </summary>
-        private List<ExpandedPlugInNode> _searchResult => _videoFX
+        private List<ExtendedPlugInNode> _searchResult => _videoFX
                                                   .Concat(_audioFX)
                                                   .Concat(_generators)
-                                                          //.Concat(_transitions)
-                                                          .ToList();
+                                                //.Concat(_transitions)
+                                                  .ToList();
 
         /// <summary>
         /// Search results that get binded to the ListBox
@@ -69,13 +70,14 @@ namespace BetterSearch
         /// <summary>
         /// Selected PlugInNode on the list
         /// </summary>
-        public ExpandedPlugInNode SelectedSearchItem => _searchResult.Find(x => listSearchResult.SelectedItem != null &&
+        public ExtendedPlugInNode SelectedSearchItem => _searchResult.Find(x => listSearchResult.SelectedItem != null &&
                                                                                 x.Plugin.Name == listSearchResult.SelectedItem.ToString());
 
         /// <summary>
         /// Item Presets that get binded to the ListBox
         /// </summary>
-        BindingList<string> _bindedItemPresets => new BindingList<string>(SelectedSearchItem.Plugin.Presets.Select(x => x.Name).ToList());
+        BindingList<string> _bindedItemPresets => SelectedSearchItem != null ? new BindingList<string>(SelectedSearchItem.Plugin.Presets.Select(x => x.Name).ToList())
+                                                                             : new BindingList<string>();
 
         /// <summary>
         /// Selected Preset on the list
