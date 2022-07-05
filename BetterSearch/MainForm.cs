@@ -22,43 +22,13 @@ namespace BetterSearch
 		}
 
 		/// <summary>
-		/// Filtered VideoFX
-		/// </summary>
-		private IEnumerable<ExtendedPlugInNode> _videoFX => SearchIn(Data.Vegas.VideoFX, isVideoFX: true);
-
-		/// <summary>
-		/// Filtered AudioFX
-		/// </summary>
-		private IEnumerable<ExtendedPlugInNode> _audioFX => SearchIn(Data.Vegas.AudioFX, isAudioFX: true);
-
-		/// <summary>
-		/// Filtered Transitions
-		/// </summary>
-		//private IEnumerable<ExpandedPlugInNode> _transitions => SearchIn(Data.Vegas.Transitions, isTransition: true);
-
-		/// <summary>
-		/// Filtered Generators
-		/// </summary>
-		private IEnumerable<ExtendedPlugInNode> _generators => SearchIn(Data.Vegas.Generators, isGenerator: true);
-
-		/// <summary>
-		/// Filter the given PlugInNode list by Search text
-		/// </summary>
-		public IEnumerable<ExtendedPlugInNode> SearchIn(PlugInNode list, bool isVideoFX = false, bool isAudioFX = false, bool isTransition = false, bool isGenerator = false)
-		{
-			return 
-				from plugin in list.Where(x => x.Name.ToLower().Contains(txtSearch.Text.ToLower()) && !x.IsContainer).ToList()
-				select new ExtendedPlugInNode(plugin.Name, plugin, isVideoFX, isAudioFX, isTransition, isGenerator);
-		}
-
-		/// <summary>
 		/// Concat the result of the lists
 		/// </summary>
 		private IEnumerable<ExtendedPlugInNode> _searchResult =>
-					new List<ExtendedPlugInNode> { new ExtendedPlugInNode { Name = "- - - VIDEO FX - - -" } }.Concat(_videoFX)
-			.Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode { Name = "- - - AUDIO FX - - -" } }).Concat(_audioFX)
-			.Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode { Name = "- - - GENERATORS - - -" } }).Concat(_generators)
-			//.Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode { Name = "- - - TRANSITIONS - - -" } }).Concat(_transitions)
+					new List<ExtendedPlugInNode> { new ExtendedPlugInNode { Name = "- - - VIDEO FX - - -" } }.Concat(Data.VideoFX)
+			.Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode { Name = "- - - AUDIO FX - - -" } }).Concat(Data.AudioFX)
+			.Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode { Name = "- - - GENERATORS - - -" } }).Concat(Data.Generators)
+			//.Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode { Name = "- - - TRANSITIONS - - -" } }).Concat(Data.Transitions)
 			;
 
 		/// <summary>
@@ -106,6 +76,7 @@ namespace BetterSearch
 			if (e.KeyCode == Keys.Up)
 			{
 				if (listSearchResult.SelectedIndex == 0) return;
+
 				listSearchResult.SelectedItem = listSearchResult.Items[listSearchResult.SelectedIndex - 1];
 				ResetPreset();
 				return;
@@ -115,6 +86,7 @@ namespace BetterSearch
 			else if (e.KeyCode == Keys.Down)
 			{
 				if (listSearchResult.SelectedIndex == listSearchResult.Items.Count - 1) return;
+
 				listSearchResult.SelectedItem = listSearchResult.Items[listSearchResult.SelectedIndex + 1];
 				ResetPreset();
 				return;
@@ -124,6 +96,7 @@ namespace BetterSearch
 			else if (e.KeyCode == Keys.Enter)
 			{
 				if (SelectedSearchItem == null) return;
+
 				using (UndoBlock undo = new UndoBlock($"Add fx: {SelectedSearchItem.Plugin.Name}"))
 				{
 					GenerateOrApplyFX();
@@ -164,6 +137,7 @@ namespace BetterSearch
 		private void listSearchResult_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode != Keys.Enter) return;
+
 			using (UndoBlock undo = new UndoBlock($"Add fx: {SelectedSearchItem.Plugin.Name}"))
 			{
 				GenerateOrApplyFX();
