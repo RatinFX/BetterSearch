@@ -58,7 +58,7 @@
             this.listSearchResult.Location = new System.Drawing.Point(0, 23);
             this.listSearchResult.Margin = new System.Windows.Forms.Padding(10, 7, 10, 3);
             this.listSearchResult.Name = "listSearchResult";
-            this.listSearchResult.Size = new System.Drawing.Size(270, 134);
+            this.listSearchResult.Size = new System.Drawing.Size(244, 134);
             this.listSearchResult.TabIndex = 13;
             this.listSearchResult.SelectedIndexChanged += new System.EventHandler(this.listSearchResult_SelectedIndexChanged);
             this.listSearchResult.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listSearchResult_KeyUp);
@@ -83,7 +83,7 @@
             this.listItemPresets.Location = new System.Drawing.Point(0, 23);
             this.listItemPresets.Margin = new System.Windows.Forms.Padding(10, 7, 10, 0);
             this.listItemPresets.Name = "listItemPresets";
-            this.listItemPresets.Size = new System.Drawing.Size(270, 134);
+            this.listItemPresets.Size = new System.Drawing.Size(244, 134);
             this.listItemPresets.TabIndex = 13;
             this.listItemPresets.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listSearchResult_KeyUp);
             this.listItemPresets.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listSearchResult_MouseDoubleClick);
@@ -93,10 +93,10 @@
             this.grpPresets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpPresets.Controls.Add(this.listItemPresets);
-            this.grpPresets.Location = new System.Drawing.Point(0, 207);
+            this.grpPresets.Location = new System.Drawing.Point(13, 207);
             this.grpPresets.Margin = new System.Windows.Forms.Padding(0, 7, 0, 0);
             this.grpPresets.Name = "grpPresets";
-            this.grpPresets.Size = new System.Drawing.Size(270, 159);
+            this.grpPresets.Size = new System.Drawing.Size(244, 159);
             this.grpPresets.TabIndex = 16;
             this.grpPresets.TabStop = false;
             this.grpPresets.Text = "Presets";
@@ -106,10 +106,10 @@
             this.grpSearchResults.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpSearchResults.Controls.Add(this.listSearchResult);
-            this.grpSearchResults.Location = new System.Drawing.Point(0, 40);
+            this.grpSearchResults.Location = new System.Drawing.Point(13, 40);
             this.grpSearchResults.Margin = new System.Windows.Forms.Padding(0, 7, 0, 3);
             this.grpSearchResults.Name = "grpSearchResults";
-            this.grpSearchResults.Size = new System.Drawing.Size(270, 159);
+            this.grpSearchResults.Size = new System.Drawing.Size(244, 159);
             this.grpSearchResults.TabIndex = 17;
             this.grpSearchResults.TabStop = false;
             this.grpSearchResults.Text = "Search results";
@@ -125,7 +125,7 @@
             this.Controls.Add(this.lblSearch);
             this.Controls.Add(this.txtSearch);
             this.Name = "MainForm";
-            this.Size = new System.Drawing.Size(270, 366);
+            this.Size = new System.Drawing.Size(270, 379);
             this.grpPresets.ResumeLayout(false);
             this.grpSearchResults.ResumeLayout(false);
             this.ResumeLayout(false);
