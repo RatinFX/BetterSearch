@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using VegasProData;
@@ -16,6 +17,7 @@ namespace BetterSearch
         {
             Data.Vegas = vegas;
             InitializeComponent();
+            ChangeTheme(ColorScheme.Dark);
             listSearchResult.DataSource = BindedSearchResult;
             listItemPresets.DataSource = BindedItemPresets;
         }
@@ -58,7 +60,49 @@ namespace BetterSearch
         /// </summary>
         public EffectPreset SelectedItemPreset => SelectedSearchItem.Plugin.Presets.FirstOrDefault(x =>
             listItemPresets.SelectedItem != null && x.Name == listItemPresets.SelectedItem.ToString().Trim());
-        
+
+        /// <summary>
+        /// Color Schemes
+        /// </summary>
+        public class ColorScheme
+        {
+            public Color PanelBG { get; set; } = Color.WhiteSmoke;
+            public Color Box { get; set; } = Color.White;
+            public Color Text { get; set; } = Color.Black;
+            public static ColorScheme Dark { get; } = new ColorScheme
+            {
+                PanelBG = Color.FromArgb(45, 45, 45),
+                Box = Color.FromArgb(70, 70, 70),
+                Text = Color.White,
+            };
+            public static ColorScheme Light { get; } = new ColorScheme
+            {
+                PanelBG = Color.WhiteSmoke,
+                Box = Color.White,
+                Text = Color.Black,
+            };
+        }
+
+        public void ChangeTheme(ColorScheme scheme, ControlCollection controls = null)
+        {
+            BackColor = scheme.PanelBG;
+            ForeColor = scheme.Text;
+            foreach (Control component in controls ?? Controls)
+            {
+                if (component.Controls.Count > 0)
+                {
+                    ChangeTheme(scheme, component.Controls);
+                }
+                component.BackColor = scheme.PanelBG;
+                component.ForeColor = scheme.Text;
+            }
+        }
+
+        private void cbxDarkTheme_CheckedChanged(object sender, EventArgs e)
+        {
+            ChangeTheme(cbxDarkTheme.Checked ? ColorScheme.Dark : ColorScheme.Light);
+        }
+
         /// <summary>
         /// Selected item index changed
         /// </summary>
