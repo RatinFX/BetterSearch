@@ -1,5 +1,4 @@
 ﻿using ScriptPortal.Vegas;
-//using Sony.Vegas;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +15,7 @@ namespace BetterSearch
         public MainForm(Vegas vegas)
         {
             Data.Vegas = vegas;
+            Methods.ReadConfig();
             InitializeComponent();
 
             Methods.ReadConfig();
