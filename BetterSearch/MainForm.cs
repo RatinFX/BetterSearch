@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using VegasProData;
@@ -16,6 +17,7 @@ namespace BetterSearch
         {
             Data.Vegas = vegas;
             InitializeComponent();
+            ChangeTheme(ColorScheme.Dark);
             listSearchResult.DataSource = BindedSearchResult;
             listItemPresets.DataSource = BindedItemPresets;
         }
@@ -24,10 +26,10 @@ namespace BetterSearch
         /// Concat the result of the lists
         /// </summary>
         public IEnumerable<ExtendedPlugInNode> SearchResult =>
-                    new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - VIDEO FX - - -") }.Concat(Data.SearchIn(Data.VideoFX, txtSearch.Text))
-            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - AUDIO FX - - -") }).Concat(Data.SearchIn(Data.AudioFX, txtSearch.Text))
-            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - GENERATORS - - -") }).Concat(Data.SearchIn(Data.Generators, txtSearch.Text))
-            //.Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - TRANSITIONS - - -") }).Concat(Data.SearchIn(Data.Transitions, txtSearch.Text))
+                   (new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - VIDEO FX - - - -") }).Concat(Data.SearchIn(Data.VideoFX, txtSearch.Text))
+            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - AUDIO FX - - - -") }).Concat(Data.SearchIn(Data.AudioFX, txtSearch.Text))
+            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - GENERATORS - - - -") }).Concat(Data.SearchIn(Data.Generators, txtSearch.Text))
+            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - TRANSITIONS - - - -") }).Concat(Data.SearchIn(Data.Transitions, txtSearch.Text))
             ;
 
         /// <summary>
@@ -58,7 +60,51 @@ namespace BetterSearch
         /// </summary>
         public EffectPreset SelectedItemPreset => SelectedSearchItem.Plugin.Presets.FirstOrDefault(x =>
             listItemPresets.SelectedItem != null && x.Name == listItemPresets.SelectedItem.ToString().Trim());
-        
+
+        /// <summary>
+        /// Color Scheme
+        /// </summary>
+        public class ColorScheme
+        {
+            public Color PanelBG { get; set; }
+            public Color BoxBG { get; set; }
+            public Color Text { get; set; }
+            public static ColorScheme Dark { get; } = new ColorScheme
+            {
+                PanelBG = Color.FromArgb(45, 45, 45),
+                BoxBG = Color.FromArgb(70, 70, 70),
+                Text = Color.White,
+            };
+            public static ColorScheme Light { get; } = new ColorScheme
+            {
+                PanelBG = Color.WhiteSmoke,
+                BoxBG = Color.White,
+                Text = Color.Black,
+            };
+        }
+
+        public void ChangeTheme(ColorScheme scheme, ControlCollection controls = null)
+        {
+            BackColor = scheme.PanelBG;
+            ForeColor = scheme.Text;
+            foreach (Control component in controls ?? Controls)
+            {
+                if (component.Controls.Count > 0)
+                    ChangeTheme(scheme, component.Controls);
+
+                component.ForeColor = scheme.Text;
+
+                component.BackColor = component is CheckBox || component is GroupBox
+                    ? scheme.PanelBG
+                    : scheme.BoxBG;
+            }
+        }
+
+        private void cbxDarkTheme_CheckedChanged(object sender, EventArgs e)
+        {
+            ChangeTheme(cbxDarkTheme.Checked ? ColorScheme.Dark : ColorScheme.Light);
+        }
+
         /// <summary>
         /// Selected item index changed
         /// </summary>
@@ -214,21 +260,37 @@ namespace BetterSearch
         {
             foreach (var trackEvent in Data.SelectedMedias)
             {
-                //if (trackEvent.IsAudio()) continue;
-                var videoEvent = (VideoEvent)trackEvent;
-
                 if (SelectedSearchItem.IsTransition)
                 {
-                    // do transition stuff ??
+                    /// TODO: Transition
                     // first media ->> second media
+                    // ...
                     continue;
                 }
 
-                Effect effect = new Effect(SelectedSearchItem.Plugin);
-                videoEvent.Effects.Add(effect);
+                if (trackEvent.IsAudio())
+                {
+                    if(!SelectedSearchItem.Plugin.IsAudio)
+                    {
+                        MessageBox.Show("You cannot apply a non AudioFX on an Audio Event.");
+                        continue;
+                    }
+                    var audioEvent = (AudioEvent)trackEvent;
+                    var afx = new Effect(SelectedSearchItem.Plugin);
+                    audioEvent.Effects.Add(afx);
+                    afx.Preset = SelectedItemPreset?.Name ?? afx.Presets.FirstOrDefault().Name;
+                    continue;
+                }
 
-                var presetName = SelectedItemPreset?.Name ?? effect.Presets.FirstOrDefault().Name;
-                effect.Preset = presetName;
+                if (!SelectedSearchItem.Plugin.IsVideo)
+                {
+                    MessageBox.Show("You cannot apply a non VideoFX on a Video Event.");
+                    continue;
+                }
+                var videoEvent = (VideoEvent)trackEvent;
+                var vfx = new Effect(SelectedSearchItem.Plugin);
+                videoEvent.Effects.Add(vfx);
+                vfx.Preset = SelectedItemPreset?.Name ?? vfx.Presets.FirstOrDefault().Name;
             }
         }
     }

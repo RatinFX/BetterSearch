@@ -82,13 +82,13 @@ public class CustomCommandModule : ICustomCommandModule
         if (!myVegas.ActivateDockView("IBetterSearch"))
         {
             // create the new DockControl
-            BetterSearch.DockControl Dock = new BetterSearch.DockControl
+            BetterSearch.DockControl dock = new BetterSearch.DockControl
             {
                 AutoLoadCommand = CCM,
                 // keeps it open all the time + reload on Vegas reload
                 PersistDockWindowState = true
             };
-            myVegas.LoadDockView(Dock);
+            myVegas.LoadDockView(dock);
         }
     }
 }
