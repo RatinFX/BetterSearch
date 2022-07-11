@@ -1,5 +1,4 @@
 ﻿using ScriptPortal.Vegas;
-//using Sony.Vegas;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +14,7 @@ namespace BetterSearch
         public MainForm(Vegas vegas)
         {
             Data.Vegas = vegas;
+            Methods.ReadConfig();
             InitializeComponent();
             listSearchResult.DataSource = BindedSearchResult;
             listItemPresets.DataSource = BindedItemPresets;
@@ -58,7 +58,7 @@ namespace BetterSearch
         /// </summary>
         public EffectPreset SelectedItemPreset => SelectedSearchItem.Plugin.Presets.FirstOrDefault(x =>
             listItemPresets.SelectedItem != null && x.Name == listItemPresets.SelectedItem.ToString().Trim());
-        
+
         /// <summary>
         /// Selected item index changed
         /// </summary>
