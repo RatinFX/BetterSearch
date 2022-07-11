@@ -30,7 +30,6 @@
 		{
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.listSearchResult = new System.Windows.Forms.ListBox();
-            this.lblSearch = new System.Windows.Forms.Label();
             this.listItemPresets = new System.Windows.Forms.ListBox();
             this.grpPresets = new System.Windows.Forms.GroupBox();
             this.grpSearchResults = new System.Windows.Forms.GroupBox();
@@ -43,10 +42,10 @@
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(64, 10);
+            this.txtSearch.Location = new System.Drawing.Point(13, 10);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(7, 10, 3, 10);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(138, 20);
+            this.txtSearch.Size = new System.Drawing.Size(189, 20);
             this.txtSearch.TabIndex = 14;
             this.txtSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyUp);
             // 
@@ -64,16 +63,6 @@
             this.listSearchResult.SelectedIndexChanged += new System.EventHandler(this.listSearchResult_SelectedIndexChanged);
             this.listSearchResult.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listSearchResult_KeyUp);
             this.listSearchResult.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listSearchResult_MouseDoubleClick);
-            // 
-            // lblSearch
-            // 
-            this.lblSearch.AutoSize = true;
-            this.lblSearch.Location = new System.Drawing.Point(10, 13);
-            this.lblSearch.Margin = new System.Windows.Forms.Padding(10, 10, 3, 3);
-            this.lblSearch.Name = "lblSearch";
-            this.lblSearch.Size = new System.Drawing.Size(44, 13);
-            this.lblSearch.TabIndex = 15;
-            this.lblSearch.Text = "Search:";
             // 
             // listItemPresets
             // 
@@ -138,7 +127,6 @@
             this.Controls.Add(this.cbxDarkTheme);
             this.Controls.Add(this.grpSearchResults);
             this.Controls.Add(this.grpPresets);
-            this.Controls.Add(this.lblSearch);
             this.Controls.Add(this.txtSearch);
             this.Name = "MainForm";
             this.Size = new System.Drawing.Size(270, 379);
@@ -153,7 +141,6 @@
 
 		private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.ListBox listSearchResult;
-        private System.Windows.Forms.Label lblSearch;
         private System.Windows.Forms.ListBox listItemPresets;
         private System.Windows.Forms.GroupBox grpPresets;
         private System.Windows.Forms.GroupBox grpSearchResults;
