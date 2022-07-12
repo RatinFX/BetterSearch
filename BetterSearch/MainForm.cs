@@ -17,7 +17,12 @@ namespace BetterSearch
         {
             Data.Vegas = vegas;
             InitializeComponent();
-            ChangeTheme(ColorScheme.Dark);
+
+            Methods.ReadConfig();
+            cbxDarkTheme.Checked = Data.Config.DarkMode;
+            ChangeTheme(cbxDarkTheme.Checked ? ColorScheme.Dark : ColorScheme.Light);
+
+            // Bind items
             listSearchResult.DataSource = BindedSearchResult;
             listItemPresets.DataSource = BindedItemPresets;
         }
@@ -102,7 +107,9 @@ namespace BetterSearch
 
         private void cbxDarkTheme_CheckedChanged(object sender, EventArgs e)
         {
+            Data.Config.DarkMode = cbxDarkTheme.Checked;
             ChangeTheme(cbxDarkTheme.Checked ? ColorScheme.Dark : ColorScheme.Light);
+            Methods.SaveConfig();
         }
 
         /// <summary>
@@ -270,7 +277,7 @@ namespace BetterSearch
 
                 if (trackEvent.IsAudio())
                 {
-                    if(!SelectedSearchItem.Plugin.IsAudio)
+                    if (!SelectedSearchItem.Plugin.IsAudio)
                     {
                         MessageBox.Show("You cannot apply a non AudioFX on an Audio Event.");
                         continue;
