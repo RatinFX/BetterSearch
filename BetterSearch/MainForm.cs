@@ -16,6 +16,7 @@ namespace BetterSearch
         {
             Data.Vegas = vegas;
             Methods.ReadConfig();
+
             InitializeComponent();
 
             Methods.ReadConfig();
@@ -23,9 +24,19 @@ namespace BetterSearch
             ChangeTheme(cbxDarkTheme.Checked ? ColorScheme.Dark : ColorScheme.Light);
 
             // Bind items
+
+            listSearchResult.ContextMenuStrip = cmsFavorites;
+
             listSearchResult.DataSource = BindedSearchResult;
             listItemPresets.DataSource = BindedItemPresets;
         }
+
+        /// <summary>
+        /// Ignored Keys in the Search
+        /// </summary>
+        public List<Keys> _ignoredKeys => new List<Keys>() {
+            Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock
+        };
 
         /// <summary>
         /// Concat the result of the lists
@@ -118,6 +129,10 @@ namespace BetterSearch
         private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
         {
             ResetPreset();
+
+            // if right click
+            // open ContextMenuStrip
+            //listSearchResult.ContextMenuStrip = cmsFavorites;
         }
 
         /// <summary>
@@ -125,9 +140,8 @@ namespace BetterSearch
         /// </summary>
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
-            // ignore the following list of keys
-            var ignoredKeys = new List<Keys>() { Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock };
-            if (ignoredKeys.Contains(e.KeyCode)) return;
+            // cehck for ignored keys
+            if (_ignoredKeys.Contains(e.KeyCode)) return;
 
             // up -> Select the item Above
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Left)

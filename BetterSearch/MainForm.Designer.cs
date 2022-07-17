@@ -28,14 +28,19 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            this.components = new System.ComponentModel.Container();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.listSearchResult = new System.Windows.Forms.ListBox();
             this.listItemPresets = new System.Windows.Forms.ListBox();
             this.grpPresets = new System.Windows.Forms.GroupBox();
             this.grpSearchResults = new System.Windows.Forms.GroupBox();
             this.cbxDarkTheme = new System.Windows.Forms.CheckBox();
+            this.cmsFavorites = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmsiAddToFavs = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsiRemoveFromFavs = new System.Windows.Forms.ToolStripMenuItem();
             this.grpPresets.SuspendLayout();
             this.grpSearchResults.SuspendLayout();
+            this.cmsFavorites.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtSearch
@@ -118,6 +123,26 @@
             this.cbxDarkTheme.UseVisualStyleBackColor = true;
             this.cbxDarkTheme.CheckedChanged += new System.EventHandler(this.cbxDarkTheme_CheckedChanged);
             // 
+            // cmsFavorites
+            // 
+            this.cmsFavorites.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmsiAddToFavs,
+            this.cmsiRemoveFromFavs});
+            this.cmsFavorites.Name = "cmsFavorites";
+            this.cmsFavorites.Size = new System.Drawing.Size(181, 70);
+            // 
+            // cmsiAddToFavs
+            // 
+            this.cmsiAddToFavs.Name = "cmsiAddToFavs";
+            this.cmsiAddToFavs.Size = new System.Drawing.Size(180, 22);
+            this.cmsiAddToFavs.Text = "Add to Favs";
+            // 
+            // cmsiRemoveFromFavs
+            // 
+            this.cmsiRemoveFromFavs.Name = "cmsiRemoveFromFavs";
+            this.cmsiRemoveFromFavs.Size = new System.Drawing.Size(180, 22);
+            this.cmsiRemoveFromFavs.Text = "Remove from Favs";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -132,6 +157,7 @@
             this.Size = new System.Drawing.Size(270, 379);
             this.grpPresets.ResumeLayout(false);
             this.grpSearchResults.ResumeLayout(false);
+            this.cmsFavorites.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -145,5 +171,8 @@
         private System.Windows.Forms.GroupBox grpPresets;
         private System.Windows.Forms.GroupBox grpSearchResults;
         private System.Windows.Forms.CheckBox cbxDarkTheme;
+        private System.Windows.Forms.ContextMenuStrip cmsFavorites;
+        private System.Windows.Forms.ToolStripMenuItem cmsiAddToFavs;
+        private System.Windows.Forms.ToolStripMenuItem cmsiRemoveFromFavs;
     }
 }
