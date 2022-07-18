@@ -23,10 +23,9 @@ namespace BetterSearch
             cbxDarkTheme.Checked = Data.Config.DarkMode;
             ChangeTheme(cbxDarkTheme.Checked ? ColorScheme.Dark : ColorScheme.Light);
 
-            // Bind items
-
             listSearchResult.ContextMenuStrip = cmsFavorites;
 
+            // Bind items
             listSearchResult.DataSource = BindedSearchResult;
             listItemPresets.DataSource = BindedItemPresets;
         }
@@ -313,6 +312,35 @@ namespace BetterSearch
                 videoEvent.Effects.Add(vfx);
                 vfx.Preset = SelectedItemPreset?.Name ?? vfx.Presets.FirstOrDefault().Name;
             }
+        }
+
+        private void cmsiAddToFavs_Click(object sender, EventArgs e)
+        {
+            if (SelectedSearchItem == null || SelectedSearchItem.Plugin == null) return;
+
+            var id = SelectedSearchItem.UniqueID;
+            var type = SelectedSearchItem.GetFavType();
+
+            if (Data.Config.Favorites.Any(x => x.UniqueIDs.Contains(id) && x.Type == type)) return;
+
+            Methods.AddToFavorites(id, type);
+        }
+
+        private void cmsiRemoveFromFavs_Click(object sender, EventArgs e)
+        {
+            if (SelectedSearchItem == null || SelectedSearchItem.Plugin == null) return;
+
+            var id = SelectedSearchItem.UniqueID;
+            var type = SelectedSearchItem.GetFavType();
+
+            if (Data.Config.Favorites.Any(x => x.UniqueIDs.Contains(id) && x.Type == type)) return;
+
+            Methods.RemoveFromFavorites(id, type);
+        }
+
+        private void cmsFavorites_MouseLeave(object sender, EventArgs e)
+        {
+            cmsFavorites.Close();
         }
     }
 }

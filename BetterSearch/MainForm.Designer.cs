@@ -130,18 +130,21 @@
             this.cmsiRemoveFromFavs});
             this.cmsFavorites.Name = "cmsFavorites";
             this.cmsFavorites.Size = new System.Drawing.Size(181, 70);
+            this.cmsFavorites.MouseLeave += new System.EventHandler(this.cmsFavorites_MouseLeave);
             // 
             // cmsiAddToFavs
             // 
             this.cmsiAddToFavs.Name = "cmsiAddToFavs";
             this.cmsiAddToFavs.Size = new System.Drawing.Size(180, 22);
             this.cmsiAddToFavs.Text = "Add to Favs";
+            this.cmsiAddToFavs.Click += new System.EventHandler(this.cmsiAddToFavs_Click);
             // 
             // cmsiRemoveFromFavs
             // 
             this.cmsiRemoveFromFavs.Name = "cmsiRemoveFromFavs";
             this.cmsiRemoveFromFavs.Size = new System.Drawing.Size(180, 22);
             this.cmsiRemoveFromFavs.Text = "Remove from Favs";
+            this.cmsiRemoveFromFavs.Click += new System.EventHandler(this.cmsiRemoveFromFavs_Click);
             // 
             // MainForm
             // 
