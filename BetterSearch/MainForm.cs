@@ -1,5 +1,4 @@
 ﻿using ScriptPortal.Vegas;
-//using Sony.Vegas;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,16 +15,27 @@ namespace BetterSearch
         public MainForm(Vegas vegas)
         {
             Data.Vegas = vegas;
+            Methods.ReadConfig();
+
             InitializeComponent();
 
             Methods.ReadConfig();
             cbxDarkTheme.Checked = Data.Config.DarkMode;
             ChangeTheme(cbxDarkTheme.Checked ? ColorScheme.Dark : ColorScheme.Light);
 
+            listSearchResult.ContextMenuStrip = cmsFavorites;
+
             // Bind items
             listSearchResult.DataSource = BindedSearchResult;
             listItemPresets.DataSource = BindedItemPresets;
         }
+
+        /// <summary>
+        /// Ignored Keys in the Search
+        /// </summary>
+        public List<Keys> _ignoredKeys => new List<Keys>() {
+            Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock
+        };
 
         /// <summary>
         /// Concat the result of the lists
@@ -118,6 +128,10 @@ namespace BetterSearch
         private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
         {
             ResetPreset();
+
+            // if right click
+            // open ContextMenuStrip
+            //listSearchResult.ContextMenuStrip = cmsFavorites;
         }
 
         /// <summary>
@@ -125,9 +139,8 @@ namespace BetterSearch
         /// </summary>
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
-            // ignore the following list of keys
-            var ignoredKeys = new List<Keys>() { Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock };
-            if (ignoredKeys.Contains(e.KeyCode)) return;
+            // cehck for ignored keys
+            if (_ignoredKeys.Contains(e.KeyCode)) return;
 
             // up -> Select the item Above
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Left)
@@ -299,6 +312,35 @@ namespace BetterSearch
                 videoEvent.Effects.Add(vfx);
                 vfx.Preset = SelectedItemPreset?.Name ?? vfx.Presets.FirstOrDefault().Name;
             }
+        }
+
+        private void cmsiAddToFavs_Click(object sender, EventArgs e)
+        {
+            if (SelectedSearchItem == null || SelectedSearchItem.Plugin == null) return;
+
+            var id = SelectedSearchItem.UniqueID;
+            var type = SelectedSearchItem.GetFavType();
+
+            if (Data.Config.Favorites.Any(x => x.UniqueIDs.Contains(id) && x.Type == type)) return;
+
+            Methods.AddToFavorites(id, type);
+        }
+
+        private void cmsiRemoveFromFavs_Click(object sender, EventArgs e)
+        {
+            if (SelectedSearchItem == null || SelectedSearchItem.Plugin == null) return;
+
+            var id = SelectedSearchItem.UniqueID;
+            var type = SelectedSearchItem.GetFavType();
+
+            if (Data.Config.Favorites.Any(x => x.UniqueIDs.Contains(id) && x.Type == type)) return;
+
+            Methods.RemoveFromFavorites(id, type);
+        }
+
+        private void cmsFavorites_MouseLeave(object sender, EventArgs e)
+        {
+            cmsFavorites.Close();
         }
     }
 }
