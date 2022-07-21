@@ -12,6 +12,14 @@ namespace BetterSearch
     public partial class MainForm : UserControl
     {
         public Timecode BASE_LENGTH = Timecode.FromSeconds(10);
+
+        /// <summary>
+        /// Ignored Keys in the Search
+        /// </summary>
+        public List<Keys> IgnoredKeys => new List<Keys>() {
+            Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock
+        };
+
         public MainForm(Vegas vegas)
         {
             Data.Vegas = vegas;
@@ -29,13 +37,6 @@ namespace BetterSearch
             listSearchResult.DataSource = BindedSearchResult;
             listItemPresets.DataSource = BindedItemPresets;
         }
-
-        /// <summary>
-        /// Ignored Keys in the Search
-        /// </summary>
-        public List<Keys> _ignoredKeys => new List<Keys>() {
-            Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock
-        };
 
         /// <summary>
         /// Concat the result of the lists
@@ -122,9 +123,6 @@ namespace BetterSearch
             Methods.SaveConfig();
         }
 
-        /// <summary>
-        /// Selected item index changed
-        /// </summary>
         private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
         {
             ResetPreset();
@@ -140,7 +138,7 @@ namespace BetterSearch
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             // cehck for ignored keys
-            if (_ignoredKeys.Contains(e.KeyCode)) return;
+            if (IgnoredKeys.Contains(e.KeyCode)) return;
 
             // up -> Select the item Above
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Left)
@@ -314,6 +312,11 @@ namespace BetterSearch
             }
         }
 
+        private void cmsFavorites_MouseLeave(object sender, EventArgs e)
+        {
+            cmsFavorites.Close();
+        }
+
         private void cmsiAddToFavs_Click(object sender, EventArgs e)
         {
             if (SelectedSearchItem == null || SelectedSearchItem.Plugin == null) return;
@@ -336,11 +339,6 @@ namespace BetterSearch
             if (Data.Config.Favorites.Any(x => x.UniqueIDs.Contains(id) && x.Type == type)) return;
 
             Methods.RemoveFromFavorites(id, type);
-        }
-
-        private void cmsFavorites_MouseLeave(object sender, EventArgs e)
-        {
-            cmsFavorites.Close();
         }
     }
 }
