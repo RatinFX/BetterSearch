@@ -22,20 +22,27 @@ namespace BetterSearch
 
         public MainForm(Vegas vegas)
         {
-            Data.Vegas = vegas;
-            Methods.ReadConfig();
+            try
+            {
+                Data.Vegas = vegas;
+                Methods.ReadConfig();
 
-            InitializeComponent();
+                InitializeComponent();
 
-            Methods.ReadConfig();
-            cbxDarkTheme.Checked = Data.Config.DarkMode;
-            ChangeTheme(cbxDarkTheme.Checked ? ColorScheme.Dark : ColorScheme.Light);
+                cbxDarkTheme.Checked = Data.Config.DarkMode;
+                ChangeTheme(cbxDarkTheme.Checked ? ColorScheme.Dark : ColorScheme.Light);
 
-            listSearchResult.ContextMenuStrip = cmsFavorites;
+                listSearchResult.ContextMenuStrip = cmsFavorites;
 
-            // Bind items
-            listSearchResult.DataSource = BindedSearchResult;
-            listItemPresets.DataSource = BindedItemPresets;
+                // Bind items
+                listSearchResult.DataSource = BindedSearchResult;
+                listItemPresets.DataSource = BindedItemPresets;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.Message);
+                throw new Exception("Error: " + e.Message);
+            }
         }
 
         /// <summary>
