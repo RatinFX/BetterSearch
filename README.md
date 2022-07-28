@@ -19,6 +19,6 @@ Add the correct VEGAS Pro API: `ScriptPortal.Vegas.dll` (14 or after) or `Sony.V
 This uses my [VegasProData](https://github.com/RatinA0/VegasProData) variable collection to make my life easier
 
 ## TODO:
-- [ ] favs list
+- [x] only show favorites
 - [ ] color code the first on the list? videoFX, audioFX, generators, transitions
 - [x] fix close on apply? (-> double click / enter)
