@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.Layout;
 using VegasProData;
 
 namespace BetterSearch
@@ -12,6 +13,14 @@ namespace BetterSearch
     public partial class MainForm : UserControl
     {
         public Timecode BASE_LENGTH = Timecode.FromSeconds(10);
+
+        /// <summary>
+        /// Ignored Keys in the Search
+        /// </summary>
+        public List<Keys> IgnoredKeys => new List<Keys>() {
+            Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock
+        };
+
         public MainForm(Vegas vegas)
         {
             try
@@ -38,20 +47,13 @@ namespace BetterSearch
         }
 
         /// <summary>
-        /// Ignored Keys in the Search
-        /// </summary>
-        public List<Keys> _ignoredKeys => new List<Keys>() {
-            Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock
-        };
-
-        /// <summary>
         /// Concat the result of the lists
         /// </summary>
         public IEnumerable<ExtendedPlugInNode> SearchResult =>
-                   (new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - VIDEO FX - - - -") }).Concat(Data.SearchIn(Data.VideoFX, txtSearch.Text))
-            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - AUDIO FX - - - -") }).Concat(Data.SearchIn(Data.AudioFX, txtSearch.Text))
-            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - GENERATORS - - - -") }).Concat(Data.SearchIn(Data.Generators, txtSearch.Text))
-            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - TRANSITIONS - - - -") }).Concat(Data.SearchIn(Data.Transitions, txtSearch.Text))
+                   (new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - VIDEO FX - - - -") }).Concat(Data.SearchIn(Data.VideoFX, txtSearch.Text, smiOnlyShowFavorites.Checked))
+            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - AUDIO FX - - - -") }).Concat(Data.SearchIn(Data.AudioFX, txtSearch.Text, smiOnlyShowFavorites.Checked))
+            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - GENERATORS - - - -") }).Concat(Data.SearchIn(Data.Generators, txtSearch.Text, smiOnlyShowFavorites.Checked))
+            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - TRANSITIONS - - - -") }).Concat(Data.SearchIn(Data.Transitions, txtSearch.Text, smiOnlyShowFavorites.Checked))
             ;
 
         /// <summary>
@@ -90,36 +92,82 @@ namespace BetterSearch
         {
             public Color PanelBG { get; set; }
             public Color BoxBG { get; set; }
+            public Color Highlight { get; set; }
             public Color Text { get; set; }
             public static ColorScheme Dark { get; } = new ColorScheme
             {
                 PanelBG = Color.FromArgb(45, 45, 45),
                 BoxBG = Color.FromArgb(70, 70, 70),
+                Highlight = Color.FromArgb(45, 45, 45),
                 Text = Color.White,
             };
             public static ColorScheme Light { get; } = new ColorScheme
             {
                 PanelBG = Color.WhiteSmoke,
                 BoxBG = Color.White,
+                Highlight = Color.WhiteSmoke,
                 Text = Color.Black,
             };
         }
 
-        public void ChangeTheme(ColorScheme scheme, ControlCollection controls = null)
+        public class CustomProfessionalColors : ProfessionalColorTable
         {
-            BackColor = scheme.PanelBG;
-            ForeColor = scheme.Text;
-            foreach (Control component in controls ?? Controls)
+            public Color Highlight { get; set; }
+            public CustomProfessionalColors() { }
+            public CustomProfessionalColors(ColorScheme scheme)
             {
-                if (component.Controls.Count > 0)
-                    ChangeTheme(scheme, component.Controls);
-
-                component.ForeColor = scheme.Text;
-
-                component.BackColor = component is CheckBox || component is GroupBox
-                    ? scheme.PanelBG
-                    : scheme.BoxBG;
+                Highlight = scheme.Highlight;
             }
+            public override Color MenuItemBorder => Color.Transparent;
+            public override Color MenuItemSelected => Highlight;
+            public override Color MenuItemPressedGradientBegin => Highlight;
+            public override Color MenuItemPressedGradientEnd => Highlight;
+            public override Color MenuItemSelectedGradientBegin => Highlight;
+            public override Color MenuItemSelectedGradientEnd => Highlight;
+        }
+
+        public void SetColors(ColorScheme scheme, dynamic item)
+        {
+            item.ForeColor = scheme.Text;
+            item.BackColor = item is CheckBox || item is GroupBox || item is UserControl
+                ? scheme.PanelBG
+                : scheme.BoxBG;
+        }
+
+        public void SetCollectionColors(ColorScheme scheme, dynamic collection)
+        {
+            foreach (var item in collection)
+            {
+                if (item is MenuStrip)
+                {
+                    var i = item as MenuStrip;
+                    SetColors(scheme, i);
+                    if (i.Items.Count == 0) continue;
+                    SetCollectionColors(scheme, i.Items);
+                    continue;
+                }
+
+                if (item is ToolStripMenuItem)
+                {
+                    var i = item as ToolStripMenuItem;
+                    SetColors(scheme, i);
+                    if (i.DropDownItems.Count == 0) continue;
+                    SetCollectionColors(scheme, i.DropDownItems);
+                    continue;
+                }
+
+                var c = item as Control;
+                SetColors(scheme, c);
+                if (c.Controls.Count == 0) continue;
+                SetCollectionColors(scheme, c.Controls);
+            }
+        }
+
+        public void ChangeTheme(ColorScheme scheme, ArrangedElementCollection collection = null)
+        {
+            menuStrip.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors(scheme));
+            SetColors(scheme, this);
+            SetCollectionColors(scheme, collection ?? Controls);
         }
 
         private void cbxDarkTheme_CheckedChanged(object sender, EventArgs e)
@@ -129,16 +177,9 @@ namespace BetterSearch
             Methods.SaveConfig();
         }
 
-        /// <summary>
-        /// Selected item index changed
-        /// </summary>
         private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
         {
             ResetPreset();
-
-            // if right click
-            // open ContextMenuStrip
-            //listSearchResult.ContextMenuStrip = cmsFavorites;
         }
 
         /// <summary>
@@ -147,7 +188,7 @@ namespace BetterSearch
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             // cehck for ignored keys
-            if (_ignoredKeys.Contains(e.KeyCode)) return;
+            if (IgnoredKeys.Contains(e.KeyCode)) return;
 
             // up -> Select the item Above
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Left)
@@ -184,12 +225,20 @@ namespace BetterSearch
             // update visible ListBox
             DebounceDispatcher.Throttle((x) =>
             {
-                listSearchResult.DataSource = BindedSearchResult;
-                ResetPreset();
-
-                // reset SelectedItem index
-                if (listSearchResult.Items.Count > 0) listSearchResult.SelectedIndex = 0;
+                SetBindedSearchResult();
             });
+        }
+
+        /// <summary>
+        /// Reset (rebind) the visible Search Result list
+        /// </summary>
+        private void SetBindedSearchResult()
+        {
+            listSearchResult.DataSource = BindedSearchResult;
+            ResetPreset();
+
+            // reset SelectedItem index
+            if (listSearchResult.Items.Count > 0) listSearchResult.SelectedIndex = 0;
         }
 
         /// <summary>
@@ -199,6 +248,8 @@ namespace BetterSearch
         {
             listItemPresets.DataSource = BindedItemPresets;
         }
+
+
 
         /// <summary>
         /// Double clicking on an item in the ListBox -> GenerateOrApplyFX()
@@ -321,6 +372,13 @@ namespace BetterSearch
             }
         }
 
+
+
+        private void cmsFavorites_MouseLeave(object sender, EventArgs e)
+        {
+            cmsFavorites.Close();
+        }
+
         private void cmsiAddToFavs_Click(object sender, EventArgs e)
         {
             if (SelectedSearchItem == null || SelectedSearchItem.Plugin == null) return;
@@ -331,6 +389,7 @@ namespace BetterSearch
             if (Data.Config.Favorites.Any(x => x.UniqueIDs.Contains(id) && x.Type == type)) return;
 
             Methods.AddToFavorites(id, type);
+            if (smiOnlyShowFavorites.Checked) SetBindedSearchResult();
         }
 
         private void cmsiRemoveFromFavs_Click(object sender, EventArgs e)
@@ -340,14 +399,17 @@ namespace BetterSearch
             var id = SelectedSearchItem.UniqueID;
             var type = SelectedSearchItem.GetFavType();
 
-            if (Data.Config.Favorites.Any(x => x.UniqueIDs.Contains(id) && x.Type == type)) return;
+            if (!Data.Config.Favorites.Any(x => x.UniqueIDs.Contains(id) && x.Type == type)) return;
 
             Methods.RemoveFromFavorites(id, type);
+            if (smiOnlyShowFavorites.Checked) SetBindedSearchResult();
         }
 
-        private void cmsFavorites_MouseLeave(object sender, EventArgs e)
+
+
+        private void smiOnlyShowFavorites_Click(object sender, EventArgs e)
         {
-            cmsFavorites.Close();
+            SetBindedSearchResult();
         }
     }
 }
