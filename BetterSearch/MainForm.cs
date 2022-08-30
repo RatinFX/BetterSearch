@@ -80,47 +80,6 @@ namespace BetterSearch
         public EffectPreset SelectedItemPreset => SelectedSearchItem.Plugin.Presets.FirstOrDefault(x =>
             listItemPresets.SelectedItem != null && x.Name == listItemPresets.SelectedItem.ToString().Trim());
 
-        /// <summary>
-        /// Color Scheme
-        /// </summary>
-        public class ColorScheme
-        {
-            public Color PanelBG { get; set; }
-            public Color BoxBG { get; set; }
-            public Color Highlight { get; set; }
-            public Color Text { get; set; }
-            public static ColorScheme Dark { get; } = new ColorScheme
-            {
-                PanelBG = Color.FromArgb(45, 45, 45),
-                BoxBG = Color.FromArgb(70, 70, 70),
-                Highlight = Color.FromArgb(45, 45, 45),
-                Text = Color.White,
-            };
-            public static ColorScheme Light { get; } = new ColorScheme
-            {
-                PanelBG = Color.WhiteSmoke,
-                BoxBG = Color.White,
-                Highlight = Color.WhiteSmoke,
-                Text = Color.Black,
-            };
-        }
-
-        public class CustomProfessionalColors : ProfessionalColorTable
-        {
-            public Color Highlight { get; set; }
-            public CustomProfessionalColors() { }
-            public CustomProfessionalColors(ColorScheme scheme)
-            {
-                Highlight = scheme.Highlight;
-            }
-            public override Color MenuItemBorder => Color.Transparent;
-            public override Color MenuItemSelected => Highlight;
-            public override Color MenuItemPressedGradientBegin => Highlight;
-            public override Color MenuItemPressedGradientEnd => Highlight;
-            public override Color MenuItemSelectedGradientBegin => Highlight;
-            public override Color MenuItemSelectedGradientEnd => Highlight;
-        }
-
         public void SetColors(ColorScheme scheme, dynamic item)
         {
             item.ForeColor = scheme.Text;
