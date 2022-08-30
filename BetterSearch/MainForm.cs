@@ -17,7 +17,7 @@ namespace BetterSearch
         /// <summary>
         /// Ignored Keys in the Search
         /// </summary>
-        public List<Keys> IgnoredKeys => new List<Keys>() {
+        public List<Keys> IgnoredKeys { get; } = new List<Keys>() {
             Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock
         };
 
@@ -41,20 +41,15 @@ namespace BetterSearch
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error: " + e.Message);
-                throw new Exception("Error: " + e.Message);
+                MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
             }
         }
 
         /// <summary>
         /// Concat the result of the lists
         /// </summary>
-        public IEnumerable<ExtendedPlugInNode> SearchResult =>
-                   (new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - VIDEO FX - - - -") }).Concat(Data.SearchIn(Data.VideoFX, txtSearch.Text, smiOnlyShowFavorites.Checked))
-            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - AUDIO FX - - - -") }).Concat(Data.SearchIn(Data.AudioFX, txtSearch.Text, smiOnlyShowFavorites.Checked))
-            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - GENERATORS - - - -") }).Concat(Data.SearchIn(Data.Generators, txtSearch.Text, smiOnlyShowFavorites.Checked))
-            .Concat(new List<ExtendedPlugInNode> { new ExtendedPlugInNode("- - - - TRANSITIONS - - - -") }).Concat(Data.SearchIn(Data.Transitions, txtSearch.Text, smiOnlyShowFavorites.Checked))
-            ;
+        public IEnumerable<ExtendedPlugInNode> SearchResult => Data.GetSearchResult(txtSearch.Text, smiOnlyShowFavorites.Checked);
 
         /// <summary>
         /// Search results that get binded to the ListBox
@@ -182,9 +177,6 @@ namespace BetterSearch
             ResetPreset();
         }
 
-        /// <summary>
-        /// Search on tip taps
-        /// </summary>
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             // cehck for ignored keys

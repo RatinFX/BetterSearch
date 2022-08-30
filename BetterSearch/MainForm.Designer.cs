@@ -105,20 +105,20 @@
             this.cmsiAddToFavs,
             this.cmsiRemoveFromFavs});
             this.cmsFavorites.Name = "cmsFavorites";
-            this.cmsFavorites.Size = new System.Drawing.Size(173, 48);
+            this.cmsFavorites.Size = new System.Drawing.Size(181, 70);
             this.cmsFavorites.MouseLeave += new System.EventHandler(this.cmsFavorites_MouseLeave);
             // 
             // cmsiAddToFavs
             // 
             this.cmsiAddToFavs.Name = "cmsiAddToFavs";
-            this.cmsiAddToFavs.Size = new System.Drawing.Size(172, 22);
+            this.cmsiAddToFavs.Size = new System.Drawing.Size(180, 22);
             this.cmsiAddToFavs.Text = "Add to Favs";
             this.cmsiAddToFavs.Click += new System.EventHandler(this.cmsiAddToFavs_Click);
             // 
             // cmsiRemoveFromFavs
             // 
             this.cmsiRemoveFromFavs.Name = "cmsiRemoveFromFavs";
-            this.cmsiRemoveFromFavs.Size = new System.Drawing.Size(172, 22);
+            this.cmsiRemoveFromFavs.Size = new System.Drawing.Size(180, 22);
             this.cmsiRemoveFromFavs.Text = "Remove from Favs";
             this.cmsiRemoveFromFavs.Click += new System.EventHandler(this.cmsiRemoveFromFavs_Click);
             // 
@@ -141,6 +141,14 @@
             this.smiSettings.Size = new System.Drawing.Size(61, 20);
             this.smiSettings.Text = "Settings";
             // 
+            // smiOnlyShowFavorites
+            // 
+            this.smiOnlyShowFavorites.CheckOnClick = true;
+            this.smiOnlyShowFavorites.Name = "smiOnlyShowFavorites";
+            this.smiOnlyShowFavorites.Size = new System.Drawing.Size(181, 22);
+            this.smiOnlyShowFavorites.Text = "Only Show Favorites";
+            this.smiOnlyShowFavorites.Click += new System.EventHandler(this.smiOnlyShowFavorites_Click);
+            // 
             // smiThemes
             // 
             this.smiThemes.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -153,22 +161,14 @@
             // smiDark
             // 
             this.smiDark.Name = "smiDark";
-            this.smiDark.Size = new System.Drawing.Size(180, 22);
+            this.smiDark.Size = new System.Drawing.Size(101, 22);
             this.smiDark.Text = "Dark";
             // 
             // smiLight
             // 
             this.smiLight.Name = "smiLight";
-            this.smiLight.Size = new System.Drawing.Size(180, 22);
+            this.smiLight.Size = new System.Drawing.Size(101, 22);
             this.smiLight.Text = "Light";
-            // 
-            // smiOnlyShowFavorites
-            // 
-            this.smiOnlyShowFavorites.CheckOnClick = true;
-            this.smiOnlyShowFavorites.Name = "smiOnlyShowFavorites";
-            this.smiOnlyShowFavorites.Size = new System.Drawing.Size(181, 22);
-            this.smiOnlyShowFavorites.Text = "Only Show Favorites";
-            this.smiOnlyShowFavorites.Click += new System.EventHandler(this.smiOnlyShowFavorites_Click);
             // 
             // MainForm
             // 
