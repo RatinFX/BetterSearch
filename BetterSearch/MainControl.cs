@@ -2,17 +2,22 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.Layout;
-using VegasProData;
+using VegasProData.Base;
+using VegasProData.General;
+using VegasProData.Favorites;
+using VegasProData.Theme;
+using VegasProData.Threading;
 
-namespace BetterSearch
+namespace BetterSearch.Views
 {
-    public partial class MainForm : UserControl
+    public partial class MainControl : UserControl
     {
         public Timecode BASE_LENGTH = Timecode.FromSeconds(10);
+        public Vegas Vegas { get; set; }
+        public ThemeConfig ThemeConfig { get; set; } = new ThemeConfig(true);
+        public FavoriteConfig FavoriteConfig { get; set; } = new FavoriteConfig(true);
 
         /// <summary>
         /// Ignored Keys in the Search
@@ -21,35 +26,81 @@ namespace BetterSearch
             Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock
         };
 
-        public MainForm(Vegas vegas)
+        public MainControl(Vegas vegas)
         {
             try
             {
                 Data.Vegas = vegas;
-                Methods.ReadConfig();
 
                 InitializeComponent();
 
-                cbxDarkTheme.Checked = Data.Config.DarkMode;
-                ChangeTheme(cbxDarkTheme.Checked ? ColorScheme.Dark : ColorScheme.Light);
-
-                listSearchResult.ContextMenuStrip = cmsFavorites;
-
                 // Bind items
+                listSearchResult.ContextMenuStrip = cmsFavorites;
                 listSearchResult.DataSource = BindedSearchResult;
                 listItemPresets.DataSource = BindedItemPresets;
+
+                // Add themes to the list
+                foreach (var item in ThemeConfig.Themes)
+                {
+                    if (tsmiThemes.DropDownItems.ContainsKey(item.Name))
+                        continue;
+
+                    var tsmi = new ToolStripMenuItem(item.Name)
+                    {
+                        Name = "tsmit" + item.Name,
+                    };
+
+                    tsmi.Click += tsmiTheme_Click;
+
+                    // Check CheckBox if it's selected
+                    tsmi.Checked = ThemeConfig.CurrentTheme.Name == item.Name;
+
+                    // Add to list
+                    tsmiThemes.DropDownItems.Add(tsmi);
+                }
+
+                ChangeTheme();
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxes.Error(e);
                 throw;
             }
         }
 
+        private void tsmiTheme_Click(object sender, EventArgs e)
+        {
+            var tsmit = sender as ToolStripMenuItem;
+
+            ThemeConfig.CurrentTheme = ThemeConfig.Themes.FirstOrDefault(x => x.Name == tsmit.Text)
+                ?? ThemeConfig.CurrentTheme
+                ?? ThemeConfig.Themes.FirstOrDefault();
+
+            ThemeConfig.Save();
+
+            // Uncheck items
+            foreach (ToolStripMenuItem item in tsmiThemes.DropDownItems)
+            {
+                item.Checked = ThemeConfig.CurrentTheme.Name == item.Text;
+            }
+
+            ChangeTheme();
+        }
+
+        void ChangeTheme()
+        {
+            ThemeController.ChangeThemeTo(
+                ThemeConfig.CurrentTheme,
+                userControl: this,
+                menuStrip: menuStrip,
+                controls: Controls
+            );
+        }
+
         /// <summary>
-        /// Concat the result of the lists
+        /// Plugin list filtered by SearchText and Favorite, if checked
         /// </summary>
-        public IEnumerable<ExtendedPlugInNode> SearchResult => Data.GetSearchResult(txtSearch.Text, smiOnlyShowFavorites.Checked);
+        public IEnumerable<FavoriteExtendedPlugInNode> SearchResult => FavoriteData.GetSearchResult(FavoriteConfig, txtSearch.Text, tsmisOnlyShowFavorites.Checked);
 
         /// <summary>
         /// Search results that get binded to the ListBox
@@ -59,7 +110,7 @@ namespace BetterSearch
         /// <summary>
         /// Selected PlugInNode on the list
         /// </summary>
-        public ExtendedPlugInNode SelectedSearchItem => SearchResult.FirstOrDefault(x =>
+        public FavoriteExtendedPlugInNode SelectedSearchItem => SearchResult.FirstOrDefault(x =>
             listSearchResult.SelectedItem != null && x.Name == listSearchResult.SelectedItem.ToString());
 
         /// <summary>
@@ -77,59 +128,8 @@ namespace BetterSearch
         /// <summary>
         /// Selected Preset on the list
         /// </summary>
-        public EffectPreset SelectedItemPreset => SelectedSearchItem.Plugin.Presets.FirstOrDefault(x =>
+        public EffectPreset SelectedItemPreset => SelectedSearchItem?.Plugin?.Presets.FirstOrDefault(x =>
             listItemPresets.SelectedItem != null && x.Name == listItemPresets.SelectedItem.ToString().Trim());
-
-        public void SetColors(ColorScheme scheme, dynamic item)
-        {
-            item.ForeColor = scheme.Text;
-            item.BackColor = item is CheckBox || item is GroupBox || item is UserControl
-                ? scheme.PanelBG
-                : scheme.BoxBG;
-        }
-
-        public void SetCollectionColors(ColorScheme scheme, dynamic collection)
-        {
-            foreach (var item in collection)
-            {
-                if (item is MenuStrip)
-                {
-                    var i = item as MenuStrip;
-                    SetColors(scheme, i);
-                    if (i.Items.Count == 0) continue;
-                    SetCollectionColors(scheme, i.Items);
-                    continue;
-                }
-
-                if (item is ToolStripMenuItem)
-                {
-                    var i = item as ToolStripMenuItem;
-                    SetColors(scheme, i);
-                    if (i.DropDownItems.Count == 0) continue;
-                    SetCollectionColors(scheme, i.DropDownItems);
-                    continue;
-                }
-
-                var c = item as Control;
-                SetColors(scheme, c);
-                if (c.Controls.Count == 0) continue;
-                SetCollectionColors(scheme, c.Controls);
-            }
-        }
-
-        public void ChangeTheme(ColorScheme scheme, ArrangedElementCollection collection = null)
-        {
-            menuStrip.Renderer = new ToolStripProfessionalRenderer(new CustomProfessionalColors(scheme));
-            SetColors(scheme, this);
-            SetCollectionColors(scheme, collection ?? Controls);
-        }
-
-        private void cbxDarkTheme_CheckedChanged(object sender, EventArgs e)
-        {
-            Data.Config.DarkMode = cbxDarkTheme.Checked;
-            ChangeTheme(cbxDarkTheme.Checked ? ColorScheme.Dark : ColorScheme.Light);
-            Methods.SaveConfig();
-        }
 
         private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -139,12 +139,14 @@ namespace BetterSearch
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             // cehck for ignored keys
-            if (IgnoredKeys.Contains(e.KeyCode)) return;
+            if (IgnoredKeys.Contains(e.KeyCode))
+                return;
 
             // up -> Select the item Above
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Left)
             {
-                if (listSearchResult.SelectedIndex == 0) return;
+                if (listSearchResult.SelectedIndex == 0)
+                    return;
 
                 listSearchResult.SelectedItem = listSearchResult.Items[listSearchResult.SelectedIndex - 1];
                 ResetPreset();
@@ -154,7 +156,8 @@ namespace BetterSearch
             // down -> Select the item Below
             if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Right)
             {
-                if (listSearchResult.SelectedIndex == listSearchResult.Items.Count - 1) return;
+                if (listSearchResult.SelectedIndex == listSearchResult.Items.Count - 1)
+                    return;
 
                 listSearchResult.SelectedItem = listSearchResult.Items[listSearchResult.SelectedIndex + 1];
                 ResetPreset();
@@ -164,20 +167,16 @@ namespace BetterSearch
             // enter -> Generate or Apply FX
             if (e.KeyCode == Keys.Enter)
             {
-                if (SelectedSearchItem == null) return;
 
-                using (UndoBlock undo = new UndoBlock($"Add fx: {SelectedSearchItem.Name}"))
-                {
-                    GenerateOrApplyFX();
-                }
+                if (SelectedSearchItem == null)
+                    return;
+
+                GenerateOrApplyFX();
                 return;
             }
 
             // update visible ListBox
-            DebounceDispatcher.Throttle((x) =>
-            {
-                SetBindedSearchResult();
-            });
+            DebounceDispatcher.Throttle(_ => SetBindedSearchResult());
         }
 
         /// <summary>
@@ -189,7 +188,8 @@ namespace BetterSearch
             ResetPreset();
 
             // reset SelectedItem index
-            if (listSearchResult.Items.Count > 0) listSearchResult.SelectedIndex = 0;
+            if (listSearchResult.Items.Count > 0)
+                listSearchResult.SelectedIndex = 0;
         }
 
         /// <summary>
@@ -200,32 +200,26 @@ namespace BetterSearch
             listItemPresets.DataSource = BindedItemPresets;
         }
 
-
-
         /// <summary>
         /// Double clicking on an item in the ListBox -> GenerateOrApplyFX()
         /// </summary>
         private void listSearchResult_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (!CanApplyPlugin) return;
+            if (!CanApplyPlugin)
+                return;
 
-            using (UndoBlock undo = new UndoBlock($"Add fx: {SelectedSearchItem.Name}"))
-            {
-                GenerateOrApplyFX();
-            }
+            GenerateOrApplyFX();
         }
 
         /// <summary>
-        /// Smashing Enter -> GenerateOrApplyFX()
+        /// Pressing Enter -> GenerateOrApplyFX()
         /// </summary>
         private void listSearchResult_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Enter || !CanApplyPlugin) return;
+            if (e.KeyCode != Keys.Enter || !CanApplyPlugin)
+                return;
 
-            using (UndoBlock undo = new UndoBlock($"Add fx: {SelectedSearchItem.Name}"))
-            {
-                GenerateOrApplyFX();
-            }
+            GenerateOrApplyFX();
         }
 
         /// <summary>
@@ -233,14 +227,22 @@ namespace BetterSearch
         /// </summary>
         private void GenerateOrApplyFX()
         {
-            // dumbass check
-            if (listSearchResult.Items.Count < 1 || !CanApplyPlugin) return;
+            using (var undo = new UndoBlock($"Add fx: {SelectedSearchItem.Name}"))
+            {
+                if (listSearchResult.Items.Count < 1 || !CanApplyPlugin)
+                    return;
 
-            // if:   it's a generator, generate it
-            if (SelectedSearchItem.IsGenerator) GenerateGenerator();
-
-            // else: apply the video / audio FX
-            else ApplyFXToSelectedMedias();
+                // Generator -> Generate it
+                if (SelectedSearchItem.IsGenerator)
+                {
+                    GenerateGenerator();
+                }
+                // Apply FX
+                else
+                {
+                    ApplyFXToSelectedMedias();
+                }
+            }
         }
 
         /// <summary>
@@ -255,7 +257,7 @@ namespace BetterSearch
             // create new VideoEvent at CursorPosition with BASE_LENGTH length
             var newEvent = new VideoEvent(Data.Vegas.Transport.CursorPosition, BASE_LENGTH);
 
-            // if there's no selected VideoTrack
+            // No selected VideoTrack
             if (Data.FirstSelectedVideoTrack == null)
             {
                 // if there's not a single VideoTrack in the project
@@ -268,10 +270,13 @@ namespace BetterSearch
                 }
 
                 // deselect all the AudioTracks
-                foreach (var track in Data.SelectedAudioTracks) track.Selected = false;
+                foreach (var track in Data.SelectedAudioTracks)
+                    track.Selected = false;
             }
 
-            var presetName = SelectedItemPreset?.Name ?? stream.Parent.Generator.Presets.FirstOrDefault().Name;
+            var presetName = SelectedItemPreset?.Name
+                ?? stream.Parent.Generator.Presets.FirstOrDefault().Name;
+
             stream.Parent.Generator.Preset = presetName;
 
             // add the Generator to the VideoTrack.Events list
@@ -289,6 +294,7 @@ namespace BetterSearch
         {
             foreach (var trackEvent in Data.SelectedMedias)
             {
+                // Transition
                 if (SelectedSearchItem.IsTransition)
                 {
                     /// TODO: Transition
@@ -297,33 +303,40 @@ namespace BetterSearch
                     continue;
                 }
 
+                // Audio FX
                 if (trackEvent.IsAudio())
                 {
+                    // Non-AudioFX on Audio Event
                     if (!SelectedSearchItem.Plugin.IsAudio)
                     {
-                        MessageBox.Show("You cannot apply a non AudioFX on an Audio Event.");
+                        MessageBoxes.Error("You cannot apply a non AudioFX on an Audio Event.");
                         continue;
                     }
-                    var audioEvent = (AudioEvent)trackEvent;
+
+                    var audioEvent = trackEvent as AudioEvent;
                     var afx = new Effect(SelectedSearchItem.Plugin);
                     audioEvent.Effects.Add(afx);
                     afx.Preset = SelectedItemPreset?.Name ?? afx.Presets.FirstOrDefault().Name;
                     continue;
                 }
 
-                if (!SelectedSearchItem.Plugin.IsVideo)
+                // Video FX
+                if (trackEvent.IsVideo())
                 {
-                    MessageBox.Show("You cannot apply a non VideoFX on a Video Event.");
-                    continue;
+                    // Non-VideoFX on Video Event
+                    if (!SelectedSearchItem.Plugin.IsVideo)
+                    {
+                        MessageBoxes.Error("You cannot apply a non VideoFX on a Video Event.");
+                        continue;
+                    }
+
+                    var videoEvent = trackEvent as VideoEvent;
+                    var vfx = new Effect(SelectedSearchItem.Plugin);
+                    videoEvent.Effects.Add(vfx);
+                    vfx.Preset = SelectedItemPreset?.Name ?? vfx.Presets.FirstOrDefault().Name;
                 }
-                var videoEvent = (VideoEvent)trackEvent;
-                var vfx = new Effect(SelectedSearchItem.Plugin);
-                videoEvent.Effects.Add(vfx);
-                vfx.Preset = SelectedItemPreset?.Name ?? vfx.Presets.FirstOrDefault().Name;
             }
         }
-
-
 
         private void cmsFavorites_MouseLeave(object sender, EventArgs e)
         {
@@ -332,31 +345,25 @@ namespace BetterSearch
 
         private void cmsiAddToFavs_Click(object sender, EventArgs e)
         {
-            if (SelectedSearchItem == null || SelectedSearchItem.Plugin == null) return;
+            if (SelectedSearchItem == null || SelectedSearchItem.Plugin == null)
+                return;
 
-            var id = SelectedSearchItem.UniqueID;
-            var type = SelectedSearchItem.GetFavType();
+            FavoriteConfig.Add(SelectedSearchItem);
 
-            if (Data.Config.Favorites.Any(x => x.UniqueIDs.Contains(id) && x.Type == type)) return;
-
-            Methods.AddToFavorites(id, type);
-            if (smiOnlyShowFavorites.Checked) SetBindedSearchResult();
+            if (tsmisOnlyShowFavorites.Checked)
+                SetBindedSearchResult();
         }
 
         private void cmsiRemoveFromFavs_Click(object sender, EventArgs e)
         {
-            if (SelectedSearchItem == null || SelectedSearchItem.Plugin == null) return;
+            if (SelectedSearchItem == null || SelectedSearchItem.Plugin == null)
+                return;
 
-            var id = SelectedSearchItem.UniqueID;
-            var type = SelectedSearchItem.GetFavType();
+            FavoriteConfig.Remove(SelectedSearchItem);
 
-            if (!Data.Config.Favorites.Any(x => x.UniqueIDs.Contains(id) && x.Type == type)) return;
-
-            Methods.RemoveFromFavorites(id, type);
-            if (smiOnlyShowFavorites.Checked) SetBindedSearchResult();
+            if (tsmisOnlyShowFavorites.Checked)
+                SetBindedSearchResult();
         }
-
-
 
         private void smiOnlyShowFavorites_Click(object sender, EventArgs e)
         {
