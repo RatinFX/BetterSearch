@@ -130,7 +130,7 @@
             this.tsmisOnlyShowFavorites.Name = "tsmisOnlyShowFavorites";
             this.tsmisOnlyShowFavorites.Size = new System.Drawing.Size(181, 22);
             this.tsmisOnlyShowFavorites.Text = "Only Show Favorites";
-            this.tsmisOnlyShowFavorites.Click += new System.EventHandler(this.smiOnlyShowFavorites_Click);
+            this.tsmisOnlyShowFavorites.Click += new System.EventHandler(this.tsmisOnlyShowFavorites_Click);
             // 
             // tsmiThemes
             // 

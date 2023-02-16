@@ -29,9 +29,8 @@ namespace BetterSearch.VegasRelated
             base.OnClosed(args);
         }
     }
-}
 
-public class CustomCommandModule : ICustomCommandModule
+    public class CustomCommandModule : ICustomCommandModule
     {
         Vegas myVegas = null;
         CustomCommand _cc = new CustomCommand(CommandCategory.View, "Better Search");
@@ -59,3 +58,4 @@ public class CustomCommandModule : ICustomCommandModule
             myVegas.LoadDockView(dock);
         }
     }
+}

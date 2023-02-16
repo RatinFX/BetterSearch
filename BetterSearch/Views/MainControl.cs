@@ -9,15 +9,47 @@ using VegasProData.General;
 using VegasProData.Favorites;
 using VegasProData.Theme;
 using VegasProData.Threading;
+using BetterSearch.Models;
 
 namespace BetterSearch.Views
 {
     public partial class MainControl : UserControl
     {
-        public Timecode BASE_LENGTH = Timecode.FromSeconds(10);
-        public Vegas Vegas { get; set; }
-        public ThemeConfig ThemeConfig { get; set; } = new ThemeConfig(true);
-        public FavoriteConfig FavoriteConfig { get; set; } = new FavoriteConfig(true);
+        /// <summary>
+        /// Plugin list filtered by SearchText and Favorite, if checked
+        /// </summary>
+        public IEnumerable<FavoriteExtendedPlugInNode> SearchResult => FavoriteData.GetSearchResult(
+            FavoriteConfig, txtSearch.Text, tsmisOnlyShowFavorites.Checked);
+
+        /// <summary>
+        /// Search results that get binded to the ListBox
+        /// </summary>
+        public BindingList<string> BindedSearchResult => new BindingList<string>(
+            SearchResult.Select(x => x.Name).ToList());
+
+        /// <summary>
+        /// Selected PlugInNode on the list
+        /// </summary>
+        public FavoriteExtendedPlugInNode SelectedSearchItem => SearchResult.FirstOrDefault(x =>
+            listSearchResult.SelectedItem != null && x.Name == listSearchResult.SelectedItem.ToString());
+
+        /// <summary>
+        /// Selected Item null checks
+        /// </summary>
+        public bool CanApplyPlugin => SelectedSearchItem != null && SelectedSearchItem.Plugin != null;
+
+        /// <summary>
+        /// Item Presets that get binded to the ListBox
+        /// </summary>
+        public BindingList<string> BindedItemPresets => SelectedSearchItem != null && SelectedSearchItem.Plugin != null
+            ? new BindingList<string>(SelectedSearchItem.Plugin.Presets.Select(x => x.Name).ToList())
+            : new BindingList<string>();
+
+        /// <summary>
+        /// Selected Preset on the list
+        /// </summary>
+        public EffectPreset SelectedItemPreset => SelectedSearchItem?.Plugin?.Presets.FirstOrDefault(x =>
+            listItemPresets.SelectedItem != null && x.Name == listItemPresets.SelectedItem.ToString().Trim());
 
         /// <summary>
         /// Ignored Keys in the Search
@@ -25,6 +57,11 @@ namespace BetterSearch.Views
         public List<Keys> IgnoredKeys { get; } = new List<Keys>() {
             Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock
         };
+
+        // Settings
+        public Settings Settings { get; set; } = new Settings(true);
+        public ThemeConfig ThemeConfig { get; set; } = new ThemeConfig(true);
+        public FavoriteConfig FavoriteConfig { get; set; } = new FavoriteConfig(true);
 
         public MainControl(Vegas vegas)
         {
@@ -50,6 +87,7 @@ namespace BetterSearch.Views
                         Name = "tsmit" + item.Name,
                     };
 
+                    // Events
                     tsmi.Click += tsmiTheme_Click;
 
                     // Check CheckBox if it's selected
@@ -59,13 +97,24 @@ namespace BetterSearch.Views
                     tsmiThemes.DropDownItems.Add(tsmi);
                 }
 
+                // Change theme
                 ChangeTheme();
+
+                // Default states
+                tsmisOnlyShowFavorites.Checked = Settings.OnlyShowFavorites;
             }
             catch (Exception e)
             {
                 MessageBoxes.Error(e);
                 throw;
             }
+        }
+
+        private void tsmisOnlyShowFavorites_Click(object sender, EventArgs e)
+        {
+            Settings.OnlyShowFavorites = tsmisOnlyShowFavorites.Checked;
+            Settings.Save();
+            SetBindedSearchResult();
         }
 
         private void tsmiTheme_Click(object sender, EventArgs e)
@@ -93,43 +142,9 @@ namespace BetterSearch.Views
                 ThemeConfig.CurrentTheme,
                 userControl: this,
                 menuStrip: menuStrip,
-                controls: Controls
+                controlCollection: Controls
             );
         }
-
-        /// <summary>
-        /// Plugin list filtered by SearchText and Favorite, if checked
-        /// </summary>
-        public IEnumerable<FavoriteExtendedPlugInNode> SearchResult => FavoriteData.GetSearchResult(FavoriteConfig, txtSearch.Text, tsmisOnlyShowFavorites.Checked);
-
-        /// <summary>
-        /// Search results that get binded to the ListBox
-        /// </summary>
-        public BindingList<string> BindedSearchResult => new BindingList<string>(SearchResult.Select(x => x.Name).ToList());
-
-        /// <summary>
-        /// Selected PlugInNode on the list
-        /// </summary>
-        public FavoriteExtendedPlugInNode SelectedSearchItem => SearchResult.FirstOrDefault(x =>
-            listSearchResult.SelectedItem != null && x.Name == listSearchResult.SelectedItem.ToString());
-
-        /// <summary>
-        /// Selected Item null checks
-        /// </summary>
-        public bool CanApplyPlugin => SelectedSearchItem != null && SelectedSearchItem.Plugin != null;
-
-        /// <summary>
-        /// Item Presets that get binded to the ListBox
-        /// </summary>
-        public BindingList<string> BindedItemPresets => SelectedSearchItem != null && SelectedSearchItem.Plugin != null
-            ? new BindingList<string>(SelectedSearchItem.Plugin.Presets.Select(x => x.Name).ToList())
-            : new BindingList<string>();
-
-        /// <summary>
-        /// Selected Preset on the list
-        /// </summary>
-        public EffectPreset SelectedItemPreset => SelectedSearchItem?.Plugin?.Presets.FirstOrDefault(x =>
-            listItemPresets.SelectedItem != null && x.Name == listItemPresets.SelectedItem.ToString().Trim());
 
         private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -138,11 +153,11 @@ namespace BetterSearch.Views
 
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
-            // cehck for ignored keys
+            // Check for ignored keys
             if (IgnoredKeys.Contains(e.KeyCode))
                 return;
 
-            // up -> Select the item Above
+            // Up -> Select the item Above
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Left)
             {
                 if (listSearchResult.SelectedIndex == 0)
@@ -153,7 +168,7 @@ namespace BetterSearch.Views
                 return;
             }
 
-            // down -> Select the item Below
+            // Down -> Select the item Below
             if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Right)
             {
                 if (listSearchResult.SelectedIndex == listSearchResult.Items.Count - 1)
@@ -164,7 +179,7 @@ namespace BetterSearch.Views
                 return;
             }
 
-            // enter -> Generate or Apply FX
+            // Enter -> Generate or Apply FX
             if (e.KeyCode == Keys.Enter)
             {
 
@@ -175,7 +190,7 @@ namespace BetterSearch.Views
                 return;
             }
 
-            // update visible ListBox
+            // Update visible items
             DebounceDispatcher.Throttle(_ => SetBindedSearchResult());
         }
 
@@ -250,26 +265,25 @@ namespace BetterSearch.Views
         /// </summary>
         private void GenerateGenerator()
         {
-            // what's this
             var media = new Media(SelectedSearchItem.Plugin);
             var stream = media.Streams.GetItemByMediaType(MediaType.Video, 0);
 
-            // create new VideoEvent at CursorPosition with BASE_LENGTH length
-            var newEvent = new VideoEvent(Data.Vegas.Transport.CursorPosition, BASE_LENGTH);
+            // Create new VideoEvent at CursorPosition with BASE_LENGTH length
+            var newEvent = new VideoEvent(Data.Vegas.Transport.CursorPosition, Timecode.FromSeconds(10));
 
             // No selected VideoTrack
             if (Data.FirstSelectedVideoTrack == null)
             {
-                // if there's not a single VideoTrack in the project
+                // No selected VideoTracks in the project
                 if (Data.VideoTracks.Count() == 0)
                 {
-                    // we create an empty VideoTrack and select it
+                    // Create an empty one and select it
                     Track videoTrack = new VideoTrack(0, "");
                     Data.Vegas.Project.Tracks.Add(videoTrack);
                     Data.VideoTracks.FirstOrDefault().Selected = true;
                 }
 
-                // deselect all the AudioTracks
+                // Deselect all AudioTracks
                 foreach (var track in Data.SelectedAudioTracks)
                     track.Selected = false;
             }
@@ -279,10 +293,10 @@ namespace BetterSearch.Views
 
             stream.Parent.Generator.Preset = presetName;
 
-            // add the Generator to the VideoTrack.Events list
+            // Add the Generator to the VideoTrack.Events list
             Data.FirstSelectedVideoTrack.Events.Add(newEvent);
 
-            // honestly no idea what's a Take but i guess we can Take those
+            // We can Take those
             var take = new Take(stream);
             newEvent.Takes.Add(take);
         }
@@ -363,11 +377,6 @@ namespace BetterSearch.Views
 
             if (tsmisOnlyShowFavorites.Checked)
                 SetBindedSearchResult();
-        }
-
-        private void smiOnlyShowFavorites_Click(object sender, EventArgs e)
-        {
-            SetBindedSearchResult();
         }
     }
 }
