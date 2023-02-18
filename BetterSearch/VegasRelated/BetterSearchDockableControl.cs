@@ -1,5 +1,4 @@
-﻿using BetterSearch.VegasRelated;
-using BetterSearch.Views;
+﻿using BetterSearch.Views;
 using ScriptPortal.Vegas;
 using System;
 using System.Collections;
