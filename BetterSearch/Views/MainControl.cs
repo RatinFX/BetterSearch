@@ -71,6 +71,9 @@ namespace BetterSearch.Views
 
                 InitializeComponent();
 
+                // Default state
+                tsmisOnlyShowFavorites.Checked = Settings.OnlyShowFavorites;
+
                 // Bind items
                 listSearchResult.ContextMenuStrip = cmsFavorites;
                 listSearchResult.DataSource = BindedSearchResult;
@@ -99,9 +102,6 @@ namespace BetterSearch.Views
 
                 // Change theme
                 ChangeTheme();
-
-                // Default states
-                tsmisOnlyShowFavorites.Checked = Settings.OnlyShowFavorites;
             }
             catch (Exception e)
             {
