@@ -12,7 +12,7 @@ namespace BetterSearch.Models
             if (!init)
                 return;
 
-            var config = BaseConfig.LoadConfig(this, @"BetterSearch\VegasFlow-Settings");
+            var config = BaseConfig.LoadConfig(this, Parameters.MainFolder("Settings"));
             if (config != null)
             {
                 OnlyShowFavorites = config.OnlyShowFavorites;
@@ -23,7 +23,7 @@ namespace BetterSearch.Models
 
         public void Save()
         {
-            BaseConfig.SaveConfig(this, @"BetterSearch\VegasFlow-Settings");
+            BaseConfig.SaveConfig(this, Parameters.MainFolder("Settings"));
         }
     }
 }
