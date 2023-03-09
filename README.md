@@ -1,5 +1,5 @@
-# BetterSearch
-FX Console but for VEGAS Pro, search and apply FX or generate generators
+# Better Search
+Search and apply FX or generate generators
 
 ## Usage
 Place the contents of the .zip in the following folder, you have to create it, if it doesn't exist yet:
