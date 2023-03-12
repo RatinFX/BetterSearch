@@ -1,24 +1,37 @@
 # BetterSearch
-FX Console but for VEGAS Pro, search and apply FX or generate generators
 
-## Usage
-Place the contents of the .zip in the following folder, you have to create it, if it doesn't exist yet:
-- `C:\Users\...\Documents\Vegas Application Extensions\`
+Improved search for Effects, Generators, and their Presets.
 
-How to add it as a shortcut (optionally you can just dock it and not worry about opening it up again):
-- Options -> Customize Keyboard -> ( if you don't have a separate already: Save As... -> name it then select it -> )
-`Show commands containing:` BetterSearch ->
-`Shortcut keys:` Shift + Space ( or whatever you'd like to use ) -> `[Add]` -> `[OK]`
+![](preview.png)
 
-Open it here: Tools -> Scripting -> Rescan Script Menu Folder -> click on the script name
+## Video
 
-Add it to the toolbar in Options -> Customize Toolbar
+https://www.youtube.com/watch?v=eJtW4jLYJ8I
+
+## Overview
+
+Quickly search and find **VideoFX**, **AudioFX** and **Generators**
+
+**Add or Remove** from your **Favorite list** by **right clicking** on an **item**
+
+Toggle options in the **Settings** menu such as:
+
+- **Only Show Favorites**
+
+## How to use
+
+1. Download "...13" or "...14" depending on your `VEGAS Pro version`
+2. Find or create a folder called Vegas Script Menu inside your Documents folder like this:
+   - `C:\Users\USER_NAME\Documents\Vegas Application Extensions`
+3. Extract the contents of the .zip file into the folder above
+4. Start VEGAS Pro and you can find the Script at `View - Extensions`
 
 ## Build
-Add the correct VEGAS Pro API: `ScriptPortal.Vegas.dll` (14 or after) or `Sony.Vegas.dll` (13 or before) as a Reference to build it.
-This uses my [VegasProData](https://github.com/RatinA0/VegasProData) variable collection to make my life easier
 
-## TODO:
-- [x] only show favorites
-- [ ] color code the first on the list? videoFX, audioFX, generators, transitions
-- [x] fix close on apply? (-> double click / enter)
+Import the correct reference:
+
+Project -> Add reference -> Browse -> Your VEGAS install folder ->
+
+- `ScriptPortal.Vegas.dll` for SONY Vegas Pro 13 and below
+
+- `Sony.Vegas.dll` for MAGIX Vegas Pro 14 and above
