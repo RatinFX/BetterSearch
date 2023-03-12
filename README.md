@@ -1,5 +1,4 @@
 # Better Search
-Search and apply FX or generate generators
 
 Improved search for Effects, Generators, and their Presets.
 
