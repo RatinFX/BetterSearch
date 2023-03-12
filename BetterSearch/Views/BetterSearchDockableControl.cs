@@ -1,11 +1,10 @@
-﻿using BetterSearch.Views;
-using ScriptPortal.Vegas;
+﻿using ScriptPortal.Vegas;
 using System;
 using System.Collections;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace BetterSearch.VegasRelated
+namespace BetterSearch.Views
 {
     public class BetterSearchDockableControl : DockableControl
     {

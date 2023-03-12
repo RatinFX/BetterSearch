@@ -1,4 +1,6 @@
-﻿using ScriptPortal.Vegas;
+﻿using VegasProData.Favorites;
+using BetterSearch.Models.Config;
+using ScriptPortal.Vegas;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,10 +8,8 @@ using System.Linq;
 using System.Windows.Forms;
 using VegasProData.Base;
 using VegasProData.General;
-using VegasProData.Favorites;
 using VegasProData.Theme;
 using VegasProData.Threading;
-using BetterSearch.Models;
 
 namespace BetterSearch.Views
 {
@@ -19,7 +19,7 @@ namespace BetterSearch.Views
         /// Plugin list filtered by SearchText and Favorite, if checked
         /// </summary>
         public IEnumerable<FavoriteExtendedPlugInNode> SearchResult => FavoriteData.GetSearchResult(
-            FavoriteConfig, txtSearch.Text, tsmisOnlyShowFavorites.Checked);
+            this.FavoriteConfig, txtSearch.Text, tsmisOnlyShowFavorites.Checked);
 
         /// <summary>
         /// Search results that get binded to the ListBox
@@ -51,17 +51,8 @@ namespace BetterSearch.Views
         public EffectPreset SelectedItemPreset => SelectedSearchItem?.Plugin?.Presets.FirstOrDefault(x =>
             listItemPresets.SelectedItem != null && x.Name == listItemPresets.SelectedItem.ToString().Trim());
 
-        /// <summary>
-        /// Ignored Keys in the Search
-        /// </summary>
-        public List<Keys> IgnoredKeys { get; } = new List<Keys>() {
-            Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock
-        };
-
-        // Settings
         public Settings Settings { get; set; } = new Settings(true);
-        public ThemeConfig ThemeConfig { get; set; } = new ThemeConfig(true);
-        public FavoriteConfig FavoriteConfig { get; set; } = new FavoriteConfig(true);
+        public FavoriteConfig FavoriteConfig { get; set; } = new FavoriteConfig(true, Parameters.MainFolder("Favorites"));
 
         public MainControl(Vegas vegas)
         {
@@ -71,6 +62,14 @@ namespace BetterSearch.Views
 
                 InitializeComponent();
 
+                // Theme
+                ThemeController.ChangeThemeTo(
+                    Theme.Dark,
+                    userControl: this,
+                    controlCollection: Controls,
+                    menuStrip: menuStrip
+                );
+
                 // Default state
                 tsmisOnlyShowFavorites.Checked = Settings.OnlyShowFavorites;
 
@@ -79,29 +78,19 @@ namespace BetterSearch.Views
                 listSearchResult.DataSource = BindedSearchResult;
                 listItemPresets.DataSource = BindedItemPresets;
 
-                // Add themes to the list
-                foreach (var item in ThemeConfig.Themes)
-                {
-                    if (tsmiThemes.DropDownItems.ContainsKey(item.Name))
-                        continue;
-
-                    var tsmi = new ToolStripMenuItem(item.Name)
+                // Check for update
+                RatinFX.VP.Helpers.Helper.CheckForUpdate_BetterSearch(
+                    Parameters.CurrentVersion,
+                    latest =>
                     {
-                        Name = "tsmit" + item.Name,
-                    };
+                        Parameters.LatestVersion = latest;
+                    }
+                );
 
-                    // Events
-                    tsmi.Click += tsmiTheme_Click;
-
-                    // Check CheckBox if it's selected
-                    tsmi.Checked = ThemeConfig.CurrentTheme.Name == item.Name;
-
-                    // Add to list
-                    tsmiThemes.DropDownItems.Add(tsmi);
+                if (!string.IsNullOrEmpty(Parameters.LatestVersion))
+                {
+                    tsmiAbout.BackColor = CustomColors.ApplyBlue;
                 }
-
-                // Change theme
-                ChangeTheme();
             }
             catch (Exception e)
             {
@@ -117,33 +106,14 @@ namespace BetterSearch.Views
             SetBindedSearchResult();
         }
 
-        private void tsmiTheme_Click(object sender, EventArgs e)
+        private void tsmiCreator_Click(object sender, EventArgs e)
         {
-            var tsmit = sender as ToolStripMenuItem;
-
-            ThemeConfig.CurrentTheme = ThemeConfig.Themes.FirstOrDefault(x => x.Name == tsmit.Text)
-                ?? ThemeConfig.CurrentTheme
-                ?? ThemeConfig.Themes.FirstOrDefault();
-
-            ThemeConfig.Save();
-
-            // Uncheck items
-            foreach (ToolStripMenuItem item in tsmiThemes.DropDownItems)
-            {
-                item.Checked = ThemeConfig.CurrentTheme.Name == item.Text;
-            }
-
-            ChangeTheme();
+            new RatinFX.VP.Views.CreatorForm().ShowDialog();
         }
 
-        void ChangeTheme()
+        private void tsmiAbout_Click(object sender, EventArgs e)
         {
-            ThemeController.ChangeThemeTo(
-                ThemeConfig.CurrentTheme,
-                userControl: this,
-                menuStrip: menuStrip,
-                controlCollection: Controls
-            );
+            new AboutForm().ShowDialog();
         }
 
         private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
@@ -154,7 +124,7 @@ namespace BetterSearch.Views
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             // Check for ignored keys
-            if (IgnoredKeys.Contains(e.KeyCode))
+            if (Parameters.IgnoredKeys.Contains(e.KeyCode))
                 return;
 
             // Up -> Select the item Above

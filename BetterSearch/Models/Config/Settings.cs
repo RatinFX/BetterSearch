@@ -1,6 +1,6 @@
 ﻿using VegasProData.Base;
 
-namespace BetterSearch.Models
+namespace BetterSearch.Models.Config
 {
     public class Settings
     {
