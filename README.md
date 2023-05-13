@@ -14,21 +14,32 @@ Quickly search and find **VideoFX**, **AudioFX** and **Generators**
 
 **Add or Remove** from your **Favorite list** by **right clicking** on an **item**
 
-Toggle options in the **Settings** menu such as:
+## Settings descriptions
 
 - **Only Show Favorites**
 
-## How to use
+- **Check or Update on Start**
 
-Make sure you have .NET 4.8 (or higher) installed.
+## How to install
 
-1. Download "...13" for `13 and below`, or "...14" for `14 and above` Vegas Pro versions
-2. Find or create a folder called Vegas Script Menu inside your **This PC - My Documents** folder like this:
-   - `[user_name]\Documents\Vegas Application Extensions`
-   - on Windows 11 try the following: `[user_name]\OneDrive\Documents\Vegas Application Extensions` 
-3. Extract the contents of the .zip file into the folder above
-4. Start VEGAS Pro and you can find the Script at `View - Extensions`
+Make sure you have at least [.NET 4.8 (or higher)](https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net48-web-installer) installed on your computer.
 
+### Quick install
+
+1. Download "...13" for **13 and earlier**, or "...14" for **14 and later** Vegas Pro versions
+2. **Run the .exe** file, this automatically extracts the files to the selected folder
+3. Click Next with the default options and wait for it to finish
+4. Start VEGAS Pro and search for the **Extension** under **Tools - Extensions**
+
+### Manual install
+
+1. Download "...13" for **13 and earlier**, or "...14" for **14 and later** Vegas Pro versions
+2. Go to your **AppData - Roaming - Vegas Pro** folder by typing the following into your Windows Explorer:
+   > %appdata%\Vegas Pro
+3. **Find or create** an **Application Extensions** folder, the path to it should looks like this:
+   > ...\AppData\Roaming\Vegas Pro\Application Extensions
+4. Extract the contents of the .zip file into the folder above
+5. Start VEGAS Pro and search for the **Extension** under **Tools - Extensions**
 ## Build
 
 Import the correct reference:
