@@ -106,6 +106,7 @@ namespace BetterSearch.Views
             if (!string.IsNullOrEmpty(Parameters.LatestVersion))
             {
                 tsmiHelp.BackColor = CustomColors.ApplyBlue;
+                tsmihAbout.BackColor = CustomColors.ApplyBlue;
             }
         }
 
