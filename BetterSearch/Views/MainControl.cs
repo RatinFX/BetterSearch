@@ -1,6 +1,10 @@
-﻿using VegasProData.Favorites;
-using BetterSearch.Models.Config;
+﻿#if VP14 || DEBUG
 using ScriptPortal.Vegas;
+#elif VP13
+using Sony.Vegas;
+#endif
+using VegasProData.Favorites;
+using BetterSearch.Models.Config;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -91,16 +95,16 @@ namespace BetterSearch.Views
 
         private void CheckForUpdate()
         {
-                RatinFX.VP.Helpers.Helper.CheckForUpdate_BetterSearch(
-                    Parameters.CurrentVersion,
-                    latest =>
-                    {
-                        Parameters.LatestVersion = latest;
-                    }
-                );
-
-                if (!string.IsNullOrEmpty(Parameters.LatestVersion))
+            RatinFX.VP.Helpers.Helper.CheckForUpdate_BetterSearch(
+                Parameters.CurrentVersion,
+                latest =>
                 {
+                    Parameters.LatestVersion = latest;
+                }
+            );
+
+            if (!string.IsNullOrEmpty(Parameters.LatestVersion))
+            {
                 tsmiHelp.BackColor = CustomColors.ApplyBlue;
             }
         }

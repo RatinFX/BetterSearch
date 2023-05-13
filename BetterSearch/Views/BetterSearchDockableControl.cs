@@ -1,4 +1,8 @@
-﻿using ScriptPortal.Vegas;
+﻿#if VP14 || DEBUG
+using ScriptPortal.Vegas;
+#elif VP13
+using Sony.Vegas;
+#endif
 using System;
 using System.Collections;
 using System.Drawing;
