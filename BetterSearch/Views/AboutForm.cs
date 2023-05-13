@@ -22,5 +22,10 @@ namespace BetterSearch.Views
         {
             Processes.OpenUrl("https://ratinfx.github.io/better-search#latest-version");
         }
+
+        private void linkGitHubIssue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Processes.OpenUrl("https://github.com/RatinFX/BetterSearch/issues");
+        }
     }
 }
