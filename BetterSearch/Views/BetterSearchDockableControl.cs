@@ -35,7 +35,7 @@ namespace BetterSearch.Views
     public class CustomCommandModule : ICustomCommandModule
     {
         Vegas myVegas = null;
-        CustomCommand _cc = new CustomCommand(CommandCategory.View, "Better Search");
+        CustomCommand _cc = new CustomCommand(CommandCategory.Tools, "Better Search");
         public void InitializeModule(Vegas vegas)
         {
             myVegas = vegas;
