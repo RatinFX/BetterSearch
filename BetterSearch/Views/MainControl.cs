@@ -89,7 +89,6 @@ namespace BetterSearch.Views
             catch (Exception e)
             {
                 MessageBoxes.Error(e);
-                throw;
             }
         }
 
