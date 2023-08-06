@@ -1,3 +1,7 @@
+# Currently discontinued because VEGAS Pro 20.0 has better search
+
+---
+
 # Better Search
 
 Improved search for Effects, Generators, and their Presets.
