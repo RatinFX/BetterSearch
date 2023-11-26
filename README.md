@@ -1,4 +1,7 @@
-# Currently discontinued because VEGAS Pro 20.0 has better search
+# Discontinued
+
+- as VEGAS Pro 20.0 and up has objectively better search
+- and I created [VPConsole](https://github.com/RatinFX/VPConsole)
 
 ---
 
@@ -7,10 +10,6 @@
 Improved search for Effects, Generators, and their Presets.
 
 ![](preview.png)
-
-## Video
-
-https://www.youtube.com/watch?v=eJtW4jLYJ8I
 
 ## Overview
 
