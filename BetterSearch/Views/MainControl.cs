@@ -11,9 +11,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using VegasProData.Base;
-using VegasProData.General;
 using VegasProData.Theme;
-using VegasProData.Threading;
+using RatinFX.VP.General;
+using RatinFX.VP.Threading;
 
 namespace BetterSearch.Views
 {

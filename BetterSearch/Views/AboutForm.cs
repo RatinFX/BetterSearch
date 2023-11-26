@@ -1,6 +1,6 @@
 ﻿using BetterSearch.Models.Config;
+using RatinFX.VP.General;
 using System.Windows.Forms;
-using VegasProData.General;
 
 namespace BetterSearch.Views
 {
