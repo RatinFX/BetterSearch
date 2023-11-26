@@ -76,36 +76,15 @@ namespace BetterSearch.Views
 
                 // Default state
                 tsmisOnlyShowFavorites.Checked = Settings.OnlyShowFavorites;
-                tsmisCheckForUpdates.Checked = Settings.CheckForUpdates;
 
                 // Bind items
                 listSearchResult.ContextMenuStrip = cmsFavorites;
                 listSearchResult.DataSource = BindedSearchResult;
                 listItemPresets.DataSource = BindedItemPresets;
-
-                if(tsmisCheckForUpdates.Checked)
-                    CheckForUpdate();
             }
             catch (Exception e)
             {
                 MessageBoxes.Error(e);
-            }
-        }
-
-        private void CheckForUpdate()
-        {
-            RatinFX.VP.Helpers.Helper.CheckForUpdate_BetterSearch(
-                Parameters.CurrentVersion,
-                latest =>
-                {
-                    Parameters.LatestVersion = latest;
-                }
-            );
-
-            if (!string.IsNullOrEmpty(Parameters.LatestVersion))
-            {
-                tsmiHelp.BackColor = CustomColors.ApplyBlue;
-                tsmihAbout.BackColor = CustomColors.ApplyBlue;
             }
         }
 
@@ -116,20 +95,9 @@ namespace BetterSearch.Views
             SetBindedSearchResult();
         }
 
-        private void tsmisCheckForUpdates_Click(object sender, EventArgs e)
-        {
-            Settings.CheckForUpdates = tsmisCheckForUpdates.Checked;
-            Settings.Save();
-        }
-
         private void tsmiCreator_Click(object sender, EventArgs e)
         {
             new RatinFX.VP.Views.CreatorForm().ShowDialog();
-        }
-
-        private void tsmihCheckForUpdate_Click(object sender, EventArgs e)
-        {
-            CheckForUpdate();
         }
 
         private void tsmihAbout_Click(object sender, EventArgs e)

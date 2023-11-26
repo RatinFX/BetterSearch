@@ -40,8 +40,6 @@
             this.tsmisOnlyShowFavorites = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiCreator = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiHelp = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmisCheckForUpdates = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmihCheckForUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmihAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsFavorites.SuspendLayout();
             this.menuStrip.SuspendLayout();
@@ -134,8 +132,7 @@
             // tsmiSettings
             // 
             this.tsmiSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmisOnlyShowFavorites,
-            this.tsmisCheckForUpdates});
+            this.tsmisOnlyShowFavorites});
             this.tsmiSettings.ForeColor = System.Drawing.Color.White;
             this.tsmiSettings.Name = "tsmiSettings";
             this.tsmiSettings.Size = new System.Drawing.Size(61, 20);
@@ -147,7 +144,7 @@
             this.tsmisOnlyShowFavorites.CheckOnClick = true;
             this.tsmisOnlyShowFavorites.ForeColor = System.Drawing.Color.White;
             this.tsmisOnlyShowFavorites.Name = "tsmisOnlyShowFavorites";
-            this.tsmisOnlyShowFavorites.Size = new System.Drawing.Size(181, 22);
+            this.tsmisOnlyShowFavorites.Size = new System.Drawing.Size(215, 22);
             this.tsmisOnlyShowFavorites.Text = "Only Show Favorites";
             this.tsmisOnlyShowFavorites.Click += new System.EventHandler(this.tsmisOnlyShowFavorites_Click);
             // 
@@ -162,33 +159,11 @@
             // tsmiHelp
             // 
             this.tsmiHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmihCheckForUpdate,
             this.tsmihAbout});
             this.tsmiHelp.ForeColor = System.Drawing.Color.White;
             this.tsmiHelp.Name = "tsmiHelp";
             this.tsmiHelp.Size = new System.Drawing.Size(44, 20);
             this.tsmiHelp.Text = "Help";
-            // 
-            // tsmisCheckForUpdates
-            // 
-            this.tsmisCheckForUpdates.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
-            this.tsmisCheckForUpdates.Checked = true;
-            this.tsmisCheckForUpdates.CheckOnClick = true;
-            this.tsmisCheckForUpdates.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tsmisCheckForUpdates.ForeColor = System.Drawing.Color.White;
-            this.tsmisCheckForUpdates.Name = "tsmisCheckForUpdates";
-            this.tsmisCheckForUpdates.Size = new System.Drawing.Size(215, 22);
-            this.tsmisCheckForUpdates.Text = "Check for Updates on Start";
-            this.tsmisCheckForUpdates.Click += new System.EventHandler(this.tsmisCheckForUpdates_Click);
-            // 
-            // tsmihCheckForUpdate
-            // 
-            this.tsmihCheckForUpdate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
-            this.tsmihCheckForUpdate.ForeColor = System.Drawing.Color.White;
-            this.tsmihCheckForUpdate.Name = "tsmihCheckForUpdate";
-            this.tsmihCheckForUpdate.Size = new System.Drawing.Size(180, 22);
-            this.tsmihCheckForUpdate.Text = "Check for Update";
-            this.tsmihCheckForUpdate.Click += new System.EventHandler(this.tsmihCheckForUpdate_Click);
             // 
             // tsmihAbout
             // 
@@ -234,8 +209,6 @@
         private System.Windows.Forms.ToolStripMenuItem tsmisOnlyShowFavorites;
         private System.Windows.Forms.ToolStripMenuItem tsmiCreator;
         private System.Windows.Forms.ToolStripMenuItem tsmiHelp;
-        private System.Windows.Forms.ToolStripMenuItem tsmisCheckForUpdates;
-        private System.Windows.Forms.ToolStripMenuItem tsmihCheckForUpdate;
         private System.Windows.Forms.ToolStripMenuItem tsmihAbout;
     }
 }

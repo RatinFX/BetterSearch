@@ -5,7 +5,6 @@ namespace BetterSearch.Models.Config
     public class Settings
     {
         public bool OnlyShowFavorites { get; set; } = false;
-        public bool CheckForUpdates { get; set; } = true;
 
         public Settings() { }
         public Settings(bool init)
@@ -17,7 +16,6 @@ namespace BetterSearch.Models.Config
             if (config != null)
             {
                 OnlyShowFavorites = config.OnlyShowFavorites;
-                CheckForUpdates = config.CheckForUpdates;
             }
 
             Save();

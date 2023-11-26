@@ -11,8 +11,6 @@ namespace BetterSearch.Models.Config
         public static string Name => "Better Search";
         public static Version Version => Assembly.GetExecutingAssembly().GetName().Version;
         public static string CurrentVersion => $"{Version.Major}.{Version.Minor}.{Version.Build}.";
-        public static string LatestVersion { get; set; }
-        public static string LatestVersionInfo { get; set; }
 
         public static List<Keys> IgnoredKeys => new List<Keys>() {
             Keys.ControlKey, Keys.ShiftKey, Keys.Menu, Keys.Alt, Keys.Tab, Keys.CapsLock,

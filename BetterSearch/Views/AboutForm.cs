@@ -10,12 +10,6 @@ namespace BetterSearch.Views
         {
             InitializeComponent();
             lblVersion.Text = $"{Parameters.Name} {Parameters.CurrentVersion}";
-
-            if (!string.IsNullOrEmpty(Parameters.LatestVersion))
-            {
-                lblVersion.Text += " -> " + Parameters.LatestVersion;
-                linkUpdate.Text = "New version available!";
-            }
         }
 
         private void linkUpdate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
