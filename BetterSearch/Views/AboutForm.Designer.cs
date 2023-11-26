@@ -32,7 +32,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.lblVersion = new System.Windows.Forms.Label();
-            this.linkUpdate = new System.Windows.Forms.LinkLabel();
             this.linkGitHubIssue = new System.Windows.Forms.LinkLabel();
             this.gbxSettingsDescriptions = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -89,23 +88,6 @@
             this.lblVersion.TabIndex = 36;
             this.lblVersion.Text = "Better Search 0.0.0.";
             // 
-            // linkUpdate
-            // 
-            this.linkUpdate.ActiveLinkColor = System.Drawing.Color.MediumTurquoise;
-            this.linkUpdate.AutoSize = true;
-            this.linkUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.linkUpdate.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.linkUpdate.LinkColor = System.Drawing.Color.PaleTurquoise;
-            this.linkUpdate.Location = new System.Drawing.Point(12, 56);
-            this.linkUpdate.Margin = new System.Windows.Forms.Padding(3, 10, 3, 10);
-            this.linkUpdate.Name = "linkUpdate";
-            this.linkUpdate.Size = new System.Drawing.Size(230, 17);
-            this.linkUpdate.TabIndex = 41;
-            this.linkUpdate.TabStop = true;
-            this.linkUpdate.Text = "You\'re using the latest version";
-            this.linkUpdate.VisitedLinkColor = System.Drawing.Color.PaleTurquoise;
-            this.linkUpdate.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkUpdate_LinkClicked);
-            // 
             // linkGitHubIssue
             // 
             this.linkGitHubIssue.ActiveLinkColor = System.Drawing.Color.MediumTurquoise;
@@ -113,7 +95,7 @@
             this.linkGitHubIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.linkGitHubIssue.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.linkGitHubIssue.LinkColor = System.Drawing.Color.PaleTurquoise;
-            this.linkGitHubIssue.Location = new System.Drawing.Point(12, 93);
+            this.linkGitHubIssue.Location = new System.Drawing.Point(12, 56);
             this.linkGitHubIssue.Margin = new System.Windows.Forms.Padding(3, 10, 3, 10);
             this.linkGitHubIssue.Name = "linkGitHubIssue";
             this.linkGitHubIssue.Size = new System.Drawing.Size(506, 17);
@@ -130,7 +112,7 @@
             this.gbxSettingsDescriptions.Controls.Add(this.panel1);
             this.gbxSettingsDescriptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             this.gbxSettingsDescriptions.ForeColor = System.Drawing.Color.White;
-            this.gbxSettingsDescriptions.Location = new System.Drawing.Point(15, 227);
+            this.gbxSettingsDescriptions.Location = new System.Drawing.Point(15, 195);
             this.gbxSettingsDescriptions.Margin = new System.Windows.Forms.Padding(6, 10, 6, 5);
             this.gbxSettingsDescriptions.Name = "gbxSettingsDescriptions";
             this.gbxSettingsDescriptions.Size = new System.Drawing.Size(501, 57);
@@ -155,7 +137,7 @@
             this.gbxTips.Controls.Add(this.panel2);
             this.gbxTips.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             this.gbxTips.ForeColor = System.Drawing.Color.White;
-            this.gbxTips.Location = new System.Drawing.Point(15, 130);
+            this.gbxTips.Location = new System.Drawing.Point(15, 93);
             this.gbxTips.Margin = new System.Windows.Forms.Padding(6, 10, 6, 5);
             this.gbxTips.Name = "gbxTips";
             this.gbxTips.Size = new System.Drawing.Size(501, 87);
@@ -179,11 +161,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.ClientSize = new System.Drawing.Size(531, 298);
+            this.ClientSize = new System.Drawing.Size(531, 266);
             this.Controls.Add(this.gbxTips);
             this.Controls.Add(this.gbxSettingsDescriptions);
             this.Controls.Add(this.linkGitHubIssue);
-            this.Controls.Add(this.linkUpdate);
             this.Controls.Add(this.lblVersion);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
@@ -211,7 +192,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblVersion;
-        private System.Windows.Forms.LinkLabel linkUpdate;
         private System.Windows.Forms.LinkLabel linkGitHubIssue;
         private System.Windows.Forms.GroupBox gbxSettingsDescriptions;
         private System.Windows.Forms.Panel panel1;

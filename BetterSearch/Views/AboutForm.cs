@@ -12,11 +12,6 @@ namespace BetterSearch.Views
             lblVersion.Text = $"{Parameters.Name} {Parameters.CurrentVersion}";
         }
 
-        private void linkUpdate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Processes.OpenUrl("https://ratinfx.github.io/better-search#latest-version");
-        }
-
         private void linkGitHubIssue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Processes.OpenUrl("https://github.com/RatinFX/BetterSearch/issues");
